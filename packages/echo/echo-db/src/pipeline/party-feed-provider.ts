@@ -37,12 +37,41 @@ export class PartyFeedProvider {
   async createOrOpenWritableFeed () {
     const partyMetadata = this._metadataStore.getParty(this._partyKey);
     if (!partyMetadata?.controlFeedKey) {
-      return this._createReadWriteFeed();
+      const feed = await this._createReadWriteFeed();
+      await this._metadataStore.setControlFeed(this._partyKey, feed.key);
+      return feed;
     }
 
     const fullKey = this._keyring.getFullKey(partyMetadata.controlFeedKey);
     if (!fullKey?.secretKey) {
-      return this._createReadWriteFeed();
+      const feed = await this._createReadWriteFeed();
+      await this._metadataStore.setControlFeed(this._partyKey, feed.key);
+      return feed;
+    }
+
+    if (this._feeds.has(fullKey.publicKey)) {
+      return this._feeds.get(fullKey.publicKey)!;
+    }
+
+    const feed = await this._feedStore.openReadWriteFeed(fullKey.publicKey, fullKey.secretKey);
+    this._trackFeed(feed);
+    return feed;
+  }
+
+  @synchronized
+  async createOrOpenDataFeed () {
+    const partyMetadata = this._metadataStore.getParty(this._partyKey);
+    if (!partyMetadata?.dataFeedKey) {
+      const feed = await this._createReadWriteFeed();
+      await this._metadataStore.setDataFeed(this._partyKey, feed.key);
+      return feed;
+    }
+
+    const fullKey = this._keyring.getFullKey(partyMetadata.dataFeedKey);
+    if (!fullKey?.secretKey) {
+      const feed = await this._createReadWriteFeed();
+      await this._metadataStore.setDataFeed(this._partyKey, feed.key);
+      return feed;
     }
 
     if (this._feeds.has(fullKey.publicKey)) {
@@ -84,7 +113,6 @@ export class PartyFeedProvider {
     const feedKey = await this._keyring.createKeyRecord({ type: KeyType.FEED });
     const fullKey = this._keyring.getFullKey(feedKey.publicKey);
     assert(fullKey && fullKey.secretKey);
-    await this._metadataStore.setControlFeed(this._partyKey, fullKey.publicKey);
     const feed = await this._feedStore.openReadWriteFeed(fullKey.publicKey, fullKey.secretKey);
     this._trackFeed(feed);
     return feed;

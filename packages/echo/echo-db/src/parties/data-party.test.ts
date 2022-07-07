@@ -5,7 +5,7 @@
 import expect from 'expect';
 import { it as test } from 'mocha';
 
-import { createKeyAdmitMessage, createPartyGenesisMessage, defaultSecretProvider, Keyring, KeyType, codec as haloCodec } from '@dxos/credentials';
+import { createKeyAdmitMessage, createPartyGenesisMessage, defaultSecretProvider, Keyring, KeyType, codec as haloCodec, createFeedAdmitMessage } from '@dxos/credentials';
 import { PublicKey } from '@dxos/crypto';
 import { codec } from '@dxos/echo-protocol';
 import { FeedStore } from '@dxos/feed-store';
@@ -65,12 +65,34 @@ describe('DataParty', () => {
     await party.open();
 
     const feed = await party.getWriteFeed();
+    // const dataFeed = await party.getDataFeed();
+    // console.log({
+    //   control: feed.key.toHex(),
+    //   data: dataFeed.key.toHex()
+    // })
     await party.credentialsWriter.write(createPartyGenesisMessage(
       keyring,
       partyKey,
       feed.key,
-      partyKey
+      identity.identityKey
     ));
+    // await party.credentialsWriter.write(createKeyAdmitMessage(
+    //   keyring,
+    //   partyKey.publicKey,
+    //   identity.identityKey,
+    //   [partyKey]
+    // ));
+    // await party.credentialsWriter.write(createKeyAdmitMessage(
+    //   keyring,
+    //   partyKey.publicKey,
+    //   identity.deviceKey,
+    // // ));
+    // await party.credentialsWriter.write(createFeedAdmitMessage(
+    //   keyring,
+    //   partyKey.publicKey,
+    //   dataFeed.key,
+    //   [partyKey],
+    // ));
 
     await party.database.createItem({ type: 'test:item' });
 
@@ -89,7 +111,7 @@ describe('DataParty', () => {
       keyring,
       partyKey,
       feed.key,
-      partyKey
+      identity.identityKey
     ));
 
     for (let i = 0; i < 10; i++) {
@@ -116,7 +138,7 @@ describe('DataParty', () => {
       keyring,
       partyKey,
       feed.key,
-      partyKey
+      identity.identityKey
     ));
     await party.processor.feedAdded.waitForCount(1);
 
@@ -141,7 +163,7 @@ describe('DataParty', () => {
       keyring,
       partyKey,
       feed.key,
-      partyKey
+      identityA.identityKey
     ));
     await party.processor.feedAdded.waitForCount(1);
 
@@ -168,13 +190,7 @@ describe('DataParty', () => {
       keyring,
       partyKey,
       feedA.key,
-      partyKey
-    ));
-    await partyA.credentialsWriter.write(createKeyAdmitMessage(
-      keyring,
-      partyKey.publicKey,
-      identityA.identityKey,
-      [partyKey]
+      identityA.identityKey
     ));
 
     const identityB = await deriveTestDeviceCredentials(identityA);

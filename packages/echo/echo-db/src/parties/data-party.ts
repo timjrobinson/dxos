@@ -23,6 +23,8 @@ import { CredentialsSigner } from '../protocol/credentials-signer';
 import { createReplicatorPlugin } from '../protocol/replicator-plugin';
 import { SnapshotStore } from '../snapshots';
 import { CONTACT_DEBOUNCE_INTERVAL } from './party-manager';
+import { createFeedAdmitMessage } from '@dxos/credentials';
+import { admitDataFeed } from './data-feed-admitter';
 
 export const PARTY_ITEM_TYPE = 'dxos:item/party';
 
@@ -167,6 +169,8 @@ export class DataParty {
       targetTimeframe: party?.latestTimeframe
     });
 
+    admitDataFeed(this._partyCore, this._credentialsSigner);
+
     // Keep updating latest reached timeframe in the metadata.
     // This timeframe will be waited for when opening the party next time.
     this._partyCore.timeframeUpdate.on(timeframe => {
@@ -231,7 +235,11 @@ export class DataParty {
   }
 
   async getWriteFeed (): Promise<FeedDescriptor> {
-    return this._feedProvider.createOrOpenWritableFeed();
+    return this._partyCore.getWriteFeed();
+  }
+
+  async getDataFeed (): Promise<FeedDescriptor> {
+    return this._partyCore.getDataFeed();
   }
 
   getFeeds (): FeedDescriptor[] {

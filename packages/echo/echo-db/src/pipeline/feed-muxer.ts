@@ -49,30 +49,35 @@ export class FeedMuxer {
    * @param _partyProcessor Processes HALO messages to update party state.
    * @param _feedStorIterator Inbound messages from the feed store.
    * @param _timeframeClock Tracks current echo timestamp.
-   * @param _feedWriter Outbound messages to the writeStream feed.
+   * @param _controlFeedWriter Outbound messages to the writeStream feed.
    * @param _options
    */
   constructor (
     private readonly _partyProcessor: CredentialProcessor & PartyStateProvider,
     private readonly _feedStorIterator: FeedStoreIterator,
     private readonly _timeframeClock: TimeframeClock,
-    private readonly _feedWriter?: FeedWriter<FeedMessage>,
+    private readonly _controlFeedWriter?: FeedWriter<FeedMessage>,
+    private readonly _dataFeedWriter?: FeedWriter<FeedMessage>,
     private readonly _options: Options = {}
   ) {
-    if (this._feedWriter) {
-      const loggingWriter = mapFeedWriter<FeedMessage, FeedMessage>(async msg => {
+    if (this._controlFeedWriter && this._dataFeedWriter) {
+      const controlLoggingWriter = mapFeedWriter<FeedMessage, FeedMessage>(async msg => {
         this._options.writeLogger?.(msg);
         return msg;
-      }, this._feedWriter);
+      }, this._controlFeedWriter);
+      const dataLoggingWriter = mapFeedWriter<FeedMessage, FeedMessage>(async msg => {
+        this._options.writeLogger?.(msg);
+        return msg;
+      }, this._dataFeedWriter);
 
-      this._outboundEchoStream = mapFeedWriter<EchoEnvelope, FeedMessage>(async message => ({
-        timeframe: this._timeframeClock.timeframe,
-        echo: message
-      }), loggingWriter);
       this._outboundHaloStream = mapFeedWriter<HaloMessage, FeedMessage>(async message => ({
         timeframe: this._timeframeClock.timeframe,
         halo: message
-      }), loggingWriter);
+      }), controlLoggingWriter);
+      this._outboundEchoStream = mapFeedWriter<EchoEnvelope, FeedMessage>(async message => ({
+        timeframe: this._timeframeClock.timeframe,
+        echo: message
+      }), dataLoggingWriter);
     }
   }
 

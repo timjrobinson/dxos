@@ -5,7 +5,7 @@
 import assert from 'assert';
 
 import { Event, synchronized } from '@dxos/async';
-import { KeyHint } from '@dxos/credentials';
+import { createFeedAdmitMessage, KeyHint } from '@dxos/credentials';
 import { PublicKey } from '@dxos/crypto';
 import { timed } from '@dxos/debug';
 import { Timeframe } from '@dxos/echo-protocol';
@@ -21,6 +21,7 @@ import { createReplicatorPlugin } from '../protocol/replicator-plugin';
 import { SnapshotStore } from '../snapshots';
 import { ContactManager } from './contact-manager';
 import { Preferences } from './preferences';
+import { admitDataFeed } from '../parties/data-feed-admitter';
 
 export const HALO_PARTY_DESCRIPTOR_TYPE = 'dxos:item/halo/party-descriptor';
 export const HALO_PARTY_CONTACT_LIST_TYPE = 'dxos:item/halo/contact-list';
@@ -148,6 +149,8 @@ export class HaloParty {
       feedHints: this._feedHints,
       initialTimeframe: this._initialTimeframe
     });
+
+    admitDataFeed(this._partyCore, this._credentialsSigner);
 
     this._invitationManager = new InvitationFactory(
       this._partyCore.processor,

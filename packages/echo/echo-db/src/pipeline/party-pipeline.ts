@@ -113,6 +113,10 @@ export class PartyPipeline {
     return feed;
   }
 
+  async getDataFeed() {
+    return this._feedProvider.createOrOpenDataFeed();
+  }
+
   get credentialsWriter (): FeedWriter<HaloMessage> {
     assert(this._pipeline?.outboundHaloStream, 'Party not open');
     return this._pipeline?.outboundHaloStream;
@@ -137,6 +141,7 @@ export class PartyPipeline {
     this._timeframeClock = new TimeframeClock(initialTimeframe);
 
     const writableFeed = await this._feedProvider.createOrOpenWritableFeed();
+    const dataFeed = await this._feedProvider.createOrOpenDataFeed();
 
     if (!this._partyProcessor) {
       this._partyProcessor = new PartyProcessor(this._partyKey);
@@ -163,10 +168,10 @@ export class PartyPipeline {
 
     this._pipeline = new FeedMuxer(
       this._partyProcessor,
-
       iterator,
       this._timeframeClock,
       createFeedWriter(writableFeed.feed),
+      createFeedWriter(dataFeed.feed),
       this._options
     );
 
@@ -174,7 +179,11 @@ export class PartyPipeline {
     // Database
     //
 
-    const databaseBackend = new FeedDatabaseBackend(this._pipeline.outboundEchoStream, this._databaseSnapshot, { snapshots: true });
+    const databaseBackend = new FeedDatabaseBackend(
+      this._pipeline.outboundEchoStream,
+      this._databaseSnapshot,
+      { snapshots: true }
+    );
     this._database = new Database(
       this._modelFactory,
       databaseBackend,

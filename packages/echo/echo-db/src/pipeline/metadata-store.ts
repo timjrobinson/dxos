@@ -129,6 +129,18 @@ export class MetadataStore {
     await this._save();
   }
 
+    /**
+   * Sets the data feed key in the party specified by public key and saves updated data in persistent storage.
+   * Update party's feed list.
+   * Creates party if it doesn't exist. Does nothing if party already has feed with given key.
+   */
+     async setControlFeed (partyKey: PublicKey, feedKey: PublicKey): Promise<void> {
+      await this.addPartyFeed(partyKey, feedKey);
+      const party = this.getParty(partyKey) ?? failUndefined();
+      party.controlFeedKey = feedKey;
+      await this._save();
+    }
+
   /**
    * Sets the data feed key in the party specified by public key and saves updated data in persistent storage.
    * Update party's feed list.

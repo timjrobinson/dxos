@@ -36,11 +36,11 @@ export class PartyFeedProvider {
   @synchronized
   async createOrOpenWritableFeed () {
     const partyMetadata = this._metadataStore.getParty(this._partyKey);
-    if (!partyMetadata?.dataFeedKey) {
+    if (!partyMetadata?.controlFeedKey) {
       return this._createReadWriteFeed();
     }
 
-    const fullKey = this._keyring.getFullKey(partyMetadata.dataFeedKey);
+    const fullKey = this._keyring.getFullKey(partyMetadata.controlFeedKey);
     if (!fullKey?.secretKey) {
       return this._createReadWriteFeed();
     }
@@ -84,7 +84,7 @@ export class PartyFeedProvider {
     const feedKey = await this._keyring.createKeyRecord({ type: KeyType.FEED });
     const fullKey = this._keyring.getFullKey(feedKey.publicKey);
     assert(fullKey && fullKey.secretKey);
-    await this._metadataStore.setDataFeed(this._partyKey, fullKey.publicKey);
+    await this._metadataStore.setControlFeed(this._partyKey, fullKey.publicKey);
     const feed = await this._feedStore.openReadWriteFeed(fullKey.publicKey, fullKey.secretKey);
     this._trackFeed(feed);
     return feed;

@@ -82,7 +82,7 @@ describe('snapshot', () => {
     expect(modelSnapshot2).toEqual({ root: ValueUtil.createMessage({ title: 'Item2 - Modified' }) });
 
     expect(snapshot.halo?.messages && snapshot.halo?.messages?.length > 0).toBeTruthy();
-    expect(snapshot.timeframe?.size()).toBe(1);
+    expect(snapshot.timeframe?.isEmpty()).toBe(false);
 
     const serialized = schema.getCodecForType('dxos.echo.snapshot.PartySnapshot').encode(snapshot);
     expect(serialized instanceof Uint8Array).toBeTruthy();

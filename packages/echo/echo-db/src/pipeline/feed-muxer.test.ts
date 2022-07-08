@@ -116,6 +116,7 @@ describe('FeedMuxer', () => {
       partyProcessor,
       feedReadStream,
       new TimeframeClock(),
+      createFeedWriter(feed),
       createFeedWriter(feed)
     );
     pipeline.setEchoProcessor(echoProcessor);

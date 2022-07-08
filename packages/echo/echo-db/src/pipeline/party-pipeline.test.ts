@@ -47,15 +47,16 @@ describe('PartyPipeline', () => {
       PublicKey.random()
     );
 
-    const feed = await partyFeedProvider.createOrOpenWritableFeed();
-    await party.open({ feedHints: [feed.key] });
+    const controlFeed = await partyFeedProvider.createOrOpenWritableFeed();
+    const dataFeed = await partyFeedProvider.createOrOpenDataFeed();
+    await party.open({ feedHints: [controlFeed.key] });
     afterTest(async () => party.close());
 
     // PartyGenesis (self-signed by Party).
     await party.credentialsWriter.write(createPartyGenesisMessage(
       keyring,
       partyKey,
-      feed.key,
+      controlFeed.key,
       partyKey)
     );
 
@@ -63,11 +64,17 @@ describe('PartyPipeline', () => {
     await party.credentialsWriter.write(createFeedAdmitMessage(
       keyring,
       partyKey.publicKey,
-      feed.key,
+      controlFeed.key,
+      [partyKey]
+    ));
+    await party.credentialsWriter.write(createFeedAdmitMessage(
+      keyring,
+      partyKey.publicKey,
+      dataFeed.key,
       [partyKey]
     ));
 
-    return { party, feedKey: feed.key, feed, feedStore, partyKey, keyring, partyFeedProvider };
+    return { party, feedKey: controlFeed.key, feed: controlFeed, feedStore, partyKey, keyring, partyFeedProvider };
   };
 
   test('create & have the feed key admitted', async () => {

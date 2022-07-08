@@ -156,6 +156,10 @@ export class PartyPipeline {
       await this._partyProcessor.takeHints(feedHints.map(publicKey => ({ publicKey, type: KeyType.FEED })));
     }
 
+    for(const feedHint of feedHints) {
+      await this._feedProvider.createOrOpenReadOnlyFeed(feedHint);
+    }
+
     //
     // Pipeline
     //

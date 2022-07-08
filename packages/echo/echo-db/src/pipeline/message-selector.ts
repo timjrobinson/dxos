@@ -24,7 +24,7 @@ const log = debug('dxos:echo-db:message-selector');
  * @param timeframeClock
  */
 export const createMessageSelector = (partyProcessor: PartyStateProvider, timeframeClock: TimeframeClock): MessageSelector => candidates => {
-  // Check ECHO message candidates first since they are less expensive than HALO cancidates.
+  // Check ECHO message candidates first since they are less expensive than HALO candidates.
   for (let i = 0; i < candidates.length; i++) {
     const { data: { timeframe, echo } } = candidates[i];
     const feedKey = PublicKey.from(candidates[i].key);
@@ -57,7 +57,9 @@ export const createMessageSelector = (partyProcessor: PartyStateProvider, timefr
         if (getPartyCredentialMessageType(halo) === PartyCredential.Type.PARTY_GENESIS) {
           return i;
         }
-      } catch { }
+      } catch {
+        // Ignore.
+      }
     }
   }
 

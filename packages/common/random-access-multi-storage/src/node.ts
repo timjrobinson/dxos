@@ -8,9 +8,10 @@ import { Storage } from './interfaces/Storage';
 import { StorageType } from './interfaces/storage-types';
 
 export const createStorage = (
-  root: string,
+  root: string, // TODO(burdon): Should be options since not required for memory.
   type?: StorageType
 ): Storage => {
+  // TODO(burdon): Change to switch statement.
   if (type === undefined) {
     return new NodeStorage(root);
   }
@@ -20,5 +21,6 @@ export const createStorage = (
   if (type === StorageType.NODE) {
     return new NodeStorage(root);
   }
+
   throw new Error(`Unsupported storage: ${type}`);
 };

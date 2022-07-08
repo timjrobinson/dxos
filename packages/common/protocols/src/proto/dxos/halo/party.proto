@@ -71,6 +71,13 @@ message KeyAdmit {
   KeyType admitKeyType = 3;                  // The KeyType of the admitKey.
 }
 
+enum FeedType {
+  /// Control feeds store credential messages.
+  CONTROL = 1;
+  /// Data feeds are used for database mutaitons.
+  DATA = 2;
+}
+
 //
 // Admit a single feed to the Party. This message must be signed by the feed key to be admitted, also by some other
 // key which has already been admitted (usually by a device pseudonym key).
@@ -80,6 +87,7 @@ message KeyAdmit {
 message FeedAdmit {
   PubKey partyKey = 1;                        // The Party public key.
   PubKey feedKey = 2;                         // The Feed public key.
+  FeedType type = 3;
 }
 
 //

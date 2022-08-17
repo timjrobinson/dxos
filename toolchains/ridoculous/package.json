@@ -21,7 +21,7 @@
   "dependencies": {
     "@microsoft/tsdoc": "~0.14.1",
     "array-iterate": "~2.0.1",
-    "debug": "^4.3.3",
+    "debug": "^4.3.4",
     "glob": "~7.1.6",
     "js-yaml": "^4.1.0",
     "mdast-util-to-markdown": "~1.3.0",

@@ -28,7 +28,7 @@
     "@dxos/protocols": "workspace:*",
     "@dxos/util": "workspace:*",
     "assert": "^2.0.0",
-    "debug": "^4.3.3",
+    "debug": "^4.3.4",
     "faker": "^5.1.0",
     "js-yaml": "^4.1.0"
   },

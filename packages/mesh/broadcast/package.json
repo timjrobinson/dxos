@@ -28,7 +28,7 @@
     "@dxos/codec-protobuf": "workspace:*",
     "@dxos/crypto": "workspace:*",
     "assert": "^2.0.0",
-    "debug": "^4.3.3",
+    "debug": "^4.3.4",
     "tiny-lru": "^7.0.6"
   },
   "devDependencies": {

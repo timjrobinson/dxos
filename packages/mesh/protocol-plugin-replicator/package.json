@@ -34,7 +34,7 @@
     "@dxos/util": "workspace:*",
     "assert": "^2.0.0",
     "buffer-json-encoding": "^1.0.2",
-    "debug": "^4.3.3"
+    "debug": "^4.3.4"
   },
   "devDependencies": {
     "@dxos/crypto": "workspace:*",

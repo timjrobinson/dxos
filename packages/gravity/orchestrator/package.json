@@ -31,7 +31,7 @@
     "@dxos/testutils": "workspace:*",
     "@dxos/util": "workspace:*",
     "@swc-node/register": "~1.4.2",
-    "debug": "^4.3.3",
+    "debug": "^4.3.4",
     "node-fetch": "^2.6.0",
     "source-map-support": "^0.5.12"
   },

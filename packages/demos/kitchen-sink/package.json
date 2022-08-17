@@ -52,7 +52,7 @@
     "@mui/system": "^5.8.1",
     "@mui/x-data-grid": "^5.12.3",
     "clsx": "^1.1.0",
-    "debug": "^4.3.3",
+    "debug": "^4.3.4",
     "immutability-helper": "^3.0.2",
     "it-all": "1.0.6",
     "mobile-detect": "~1.4.5",

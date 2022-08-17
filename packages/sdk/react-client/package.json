@@ -26,7 +26,7 @@
     "@dxos/react-async": "workspace:*",
     "@dxos/util": "workspace:*",
     "assert": "^2.0.0",
-    "debug": "^4.3.3",
+    "debug": "^4.3.4",
     "use-subscription": "^1.8.0"
   },
   "devDependencies": {

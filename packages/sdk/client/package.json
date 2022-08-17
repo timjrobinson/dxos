@@ -33,7 +33,7 @@
     "@dxos/util": "workspace:*",
     "abstract-leveldown": "~7.0.0",
     "assert": "^2.0.0",
-    "debug": "^4.3.3",
+    "debug": "^4.3.4",
     "del": "^5.1.0",
     "jsondown": "dxos/jsondown#main",
     "level-js": "^5.0.2",

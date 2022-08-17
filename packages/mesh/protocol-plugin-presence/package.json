@@ -34,7 +34,7 @@
     "@dxos/protocols": "workspace:*",
     "assert": "^2.0.0",
     "buffer-json-encoding": "^1.0.2",
-    "debug": "^4.3.3",
+    "debug": "^4.3.4",
     "ngraph.graph": "^19.0.1",
     "p-limit": "^3.1.0",
     "queue-microtask": "^1.1.2"

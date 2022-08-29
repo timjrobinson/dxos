@@ -326,7 +326,9 @@ export class BotHandle {
         timeout: 20_000 // TODO(dmaretskyi): Turn long-running RPCs into streams and shorten the timeout.
       }
     );
+    console.log("BEFORE OPEN")
     await this._rpc.open();
+    console.log('RPC OPEN')
   }
 
   private async _initialize (invitation?: InvitationDescriptor): Promise<void> {

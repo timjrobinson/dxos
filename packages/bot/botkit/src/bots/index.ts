@@ -6,4 +6,4 @@ export * from './client-bot';
 export * from './empty-bot';
 export * from './start-bot';
 export * from './echo-bot';
-export * from './unix-client-rpc-port';
+export * from './socket-rpc-port';

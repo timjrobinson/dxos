@@ -9,10 +9,11 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 import { promisify } from 'util';
 
-import { Event } from '@dxos/async';
+import { Event, sleep } from '@dxos/async';
 import { RpcPort } from '@dxos/rpc';
 
 import { BotContainer, BotExitStatus, SpawnOptions } from './bot-container';
+import { createSocketClientRpcPort } from '../bots/socket-rpc-port';
 
 export class DockerContainer implements BotContainer {
   error = new Event<[id: string, error: Error]>();
@@ -20,15 +21,29 @@ export class DockerContainer implements BotContainer {
   private _spawned: Array<string> = [];
 
   async spawn (opts: SpawnOptions): Promise<RpcPort> {
-    const sockPath = join(tmpdir(), `${opts.id}.sock`);
-    const sock = createUnixServerRpcPort(sockPath);
+
+    const randomPort = Math.floor(Math.random() * (65535 - 1024) + 1024);
+
     try {
-      await promisify(exec)(`docker run -v ${opts.localPath}:/bundle.js -v ${sockPath}:/bot.sock --name dxos_bot_${opts.id} botkit node /bundle.js`);
+      await promisify(exec)(`docker run --rm --expose=1337 -p ${randomPort}:1337 -d -v ${opts.localPath}:/bundle.js --name dxos_bot_${opts.id} botkit node /bundle.js`);
     } catch (e) {
       console.log(e);
       throw e;
     }
-    return sock;
+
+    // let ip!: string;
+    // try {
+    //   const { stdout: ip2 } = await promisify(exec)(`docker inspect --format '{{ .NetworkSettings.IPAddress }}' dxos_bot_${opts.id}`);
+    //   ip = ip2.trim();
+    //   console.log({ ip })
+    // } catch (e) {
+    //   console.log(e);
+    //   throw e;
+    // }
+
+    await sleep(100)
+
+    return createSocketClientRpcPort(randomPort, '127.0.0.1');
   }
 
   async kill (id: string): Promise<void> {
@@ -40,19 +55,3 @@ export class DockerContainer implements BotContainer {
   }
 }
 
-export const createUnixServerRpcPort = (path: string): RpcPort => {
-  const encoder = new Encoder();
-  const parser = new Parser();
-  const socket = createServer((conn) => {
-    encoder.pipe(conn);
-    conn.pipe(parser);
-  });
-  socket.listen(path);
-  return {
-    send: (msg) => encoder.write(msg),
-    subscribe: cb => {
-      parser.on('message', cb);
-      return () => parser.off('message', cb);
-    }
-  };
-};

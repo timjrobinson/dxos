@@ -5,7 +5,7 @@
 import debug from 'debug';
 import assert from 'node:assert';
 
-import { Bot, createIpcPort, createUnixClientRpcPort, startBot } from '@dxos/botkit';
+import { Bot, createIpcPort, createSocketServerRpcPort, startBot } from '@dxos/botkit';
 import { Item } from '@dxos/echo-db';
 import { ObjectModel } from '@dxos/object-model';
 import { SubscriptionGroup } from '@dxos/util';
@@ -43,7 +43,7 @@ export class IsolatedPingBot extends Bot {
 }
 
 if (typeof require !== 'undefined' && require.main === module) {
-  const port = process.send === undefined ? createUnixClientRpcPort('/bot.sock') : createIpcPort(process);
+  const port = process.send === undefined ? createSocketServerRpcPort(1337) : createIpcPort(process);
   log('Starting client bot');
   void startBot(new IsolatedPingBot(), port);
 }

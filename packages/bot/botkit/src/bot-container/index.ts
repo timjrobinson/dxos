@@ -3,5 +3,6 @@
 //
 
 export * from './bot-container';
+export * from './docker-container';
 export * from './node-container';
 export * from './in-process';

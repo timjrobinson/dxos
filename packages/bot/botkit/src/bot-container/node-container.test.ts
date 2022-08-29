@@ -118,7 +118,7 @@ describe('Node container', function () {
       expect(PublicKey.from(payload).toString()).toBe(PublicKey.from(command).toString());
 
       await rpcClient.rpc.stop();
-      container.killAll();
+      await container.killAll();
       await client.destroy();
     });
   });

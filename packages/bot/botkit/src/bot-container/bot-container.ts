@@ -22,5 +22,5 @@ export interface BotContainer {
 
   spawn(opts: SpawnOptions): Promise<RpcPort>
   kill(id: string): Promise<void>
-  killAll(): void
+  killAll(): Promise<void>
 }

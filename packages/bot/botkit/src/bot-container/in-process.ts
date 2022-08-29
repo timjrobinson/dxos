@@ -46,7 +46,7 @@ export class InProcessBotContainer implements BotContainer {
     }]);
   }
 
-  killAll () {
+  async killAll () {
     for (const id of Array.from(this._bots.keys())) {
       void this.kill(id);
     }

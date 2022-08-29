@@ -5,6 +5,9 @@
 import { exec } from 'child_process';
 import { Encoder, Parser } from 'fringe';
 import { createServer } from 'net';
+import { tmpdir } from 'os';
+import { join } from 'path';
+import { promisify } from 'util';
 
 import { Event } from '@dxos/async';
 import { RpcPort } from '@dxos/rpc';
@@ -16,15 +19,23 @@ export class DockerContainer implements BotContainer {
   exited = new Event<[id: string, status: BotExitStatus]>();
   private _spawned: Array<string> = [];
 
-  spawn (opts: SpawnOptions): Promise<RpcPort> {
-    exec('docker exec ');
+  async spawn (opts: SpawnOptions): Promise<RpcPort> {
+    const sockPath = join(tmpdir(), `${opts.id}.sock`);
+    const sock = createUnixServerRpcPort(sockPath);
+    try {
+      await promisify(exec)(`docker run -v ${opts.localPath}:/bundle.js -v ${sockPath}:/bot.sock --name dxos_bot_${opts.id} botkit node /bundle.js`);
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+    return sock;
   }
 
-  kill (id: string): Promise<void> {
-    throw new Error('Method not implemented.');
+  async kill (id: string): Promise<void> {
+    await promisify(exec)(`docker stop dxos_bot_${id}`);
   }
 
-  killAll (): void {
+  async killAll (): Promise<void> {
     throw new Error('Method not implemented.');
   }
 }

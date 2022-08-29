@@ -78,7 +78,7 @@ export class NodeContainer implements BotContainer {
     child.kill();
   }
 
-  killAll () {
+  async killAll () {
     for (const [id, botProcess] of Array.from(this._processes.entries())) {
       botProcess.kill();
       this._processes.delete(id);

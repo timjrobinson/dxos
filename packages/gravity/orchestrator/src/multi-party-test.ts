@@ -26,17 +26,25 @@ const multiItemStress = async () => {
 
   let botCount = 0;
 
-  do {
+  while(true) {
     const party = await orchestrator.client.echo.createParty();
 
     for(const _ of range(botsPerParty)) {
-      await orchestrator.spawnBot({
+      const bot = await orchestrator.spawnBot({
         localPath: require.resolve('./isolated-ping-bot')
       }, party);
       console.log(`botCount=${++botCount}`);
-      await sleep(SLEEP_TIME);
+
+      bot.
     }
-  } while (isAllFresh(orchestrator.party));
+    
+    await sleep(SLEEP_TIME);
+
+    const areAllFresh = orchestrator.client.echo.queryParties().value.every(party => isAllFresh(party));
+    if(!areAllFresh) {
+      break;
+    }
+  }
 
   console.log('done');
 

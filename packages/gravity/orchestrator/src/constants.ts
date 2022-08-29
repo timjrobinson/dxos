@@ -3,6 +3,6 @@
 //
 
 export const ITEM_TYPE = 'gravity:item/pings';
-export const INTERVAL_MS = 200;
-export const SLEEP_TIME = 1000;
-export const SLACK_FOR_BOT_UPDATES_MS = 2000;
+export const INTERVAL_MS = 1000;
+export const SLEEP_TIME = 100;
+export const SLACK_FOR_BOT_UPDATES_MS = 5000;

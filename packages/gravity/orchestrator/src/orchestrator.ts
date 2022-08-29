@@ -10,14 +10,13 @@ import { Party } from '@dxos/client';
 import { Client } from '@dxos/client/client';
 import { Config } from '@dxos/config';
 import { NetworkManager } from '@dxos/network-manager';
-import { PublicKey } from '@dxos/protocols';
+import { PublicKey, Timeframe } from '@dxos/protocols';
 import { createTestBroker, TestBroker } from '@dxos/signal';
-import { randomInt } from '@dxos/util';
+import { boolGuard, randomInt } from '@dxos/util';
 
 export class Orchestrator {
   private _client: Client | undefined;
   private _botFactoryClient = new BotFactoryClient(new NetworkManager());
-  private _party: Party | undefined;
   private _config?: Config;
   private _broker?: TestBroker;
 
@@ -25,9 +24,9 @@ export class Orchestrator {
     private readonly _botContainer: BotContainer
   ) { }
 
-  get party (): Party {
-    assert(this._party);
-    return this._party;
+  get client(): Client {
+    assert(this._client);
+    return this._client;
   }
 
   get botFactoryClient (): BotFactoryClient {
@@ -51,7 +50,6 @@ export class Orchestrator {
     this._client = new Client(this._config);
     await this._client.initialize();
     await this._client.halo.createProfile();
-    this._party = await this._client.echo.createParty();
 
     const topic = PublicKey.random();
 
@@ -68,8 +66,28 @@ export class Orchestrator {
     await this._broker?.stop();
   }
 
-  async spawnBot (botPackageSpecifier: BotPackageSpecifier) {
-    assert(this._party);
-    return await this._botFactoryClient.spawn(botPackageSpecifier, this._party);
+  async spawnBot (botPackageSpecifier: BotPackageSpecifier, party: Party) {
+    return await this._botFactoryClient.spawn(botPackageSpecifier, party);
+  }
+
+  async checkBots() {
+    const bots = await this._botFactoryClient.getBots()
+
+    const parties = new Set(bots.map(bot => bot.partyKey).filter(boolGuard))
+
+    for(const party of parties) {
+      const botsForParty = bots.filter(bot => bot.partyKey && bot.partyKey.equals(party))
+
+      const maximalTiemframe = Timeframe.merge(
+        ...botsForParty.map(b => b.report?.partyDetails?.processedTimeframe)
+      )
+    }
+
+
+
+
+    bots.forEach(bot => {
+      bot.report?.partyDetails?.processedTimeframe
+    })
   }
 }

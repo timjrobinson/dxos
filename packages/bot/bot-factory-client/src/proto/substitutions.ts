@@ -3,10 +3,11 @@
 //
 
 import { anySubstitutions, timestampSubstitutions } from '@dxos/codec-protobuf';
-import { publicKeySubstitutions } from '@dxos/protocols';
+import { publicKeySubstitutions, timeframeSubstitutions } from '@dxos/protocols';
 
 export default {
   ...timestampSubstitutions,
   ...publicKeySubstitutions,
-  ...anySubstitutions
+  ...anySubstitutions,
+  ...timeframeSubstitutions,
 };

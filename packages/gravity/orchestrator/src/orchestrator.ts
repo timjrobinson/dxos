@@ -33,6 +33,11 @@ export class Orchestrator {
     return this._botFactoryClient;
   }
 
+  get config() {
+    assert(this._config);
+    return this._config;
+  }
+
   async initialize () {
     const port = randomInt(40000, 10000);
     this._broker = await createTestBroker(port);
@@ -70,24 +75,30 @@ export class Orchestrator {
     return await this._botFactoryClient.spawn(botPackageSpecifier, party);
   }
 
-  async checkBots() {
+  async checkLag(): Promise<number[]> {
     const bots = await this._botFactoryClient.getBots()
 
     const parties = new Set(bots.map(bot => bot.partyKey).filter(boolGuard))
 
+    let lags: number[] = []
     for(const party of parties) {
       const botsForParty = bots.filter(bot => bot.partyKey && bot.partyKey.equals(party))
 
-      const maximalTiemframe = Timeframe.merge(
-        ...botsForParty.map(b => b.report?.partyDetails?.processedTimeframe)
+      const maximalTimeframe = Timeframe.merge(
+        ...botsForParty.map(b => b.report?.partyDetails?.processedTimeframe).filter(boolGuard)
       )
+
+      for(const bot of botsForParty) {
+        lags.push(getLag(
+          maximalTimeframe,
+          bot.report?.partyDetails?.processedTimeframe ?? new Timeframe()
+        ))
+      }
     }
 
-
-
-
-    bots.forEach(bot => {
-      bot.report?.partyDetails?.processedTimeframe
-    })
+    return lags
   }
 }
+
+const getLag = (maximal: Timeframe, current: Timeframe) =>
+  maximal.frames().reduce((acc, [key, seq]) => acc + seq - (current.get(key) ?? -1), 0)

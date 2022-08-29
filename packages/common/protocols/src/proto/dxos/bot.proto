@@ -94,6 +94,8 @@ message GetLogsRequest {
 message BotReport {
   /// Details of the party the bot was spawned for.
   optional dxos.client.PartyDetails party_details = 1;
+
+  google.protobuf.Timestamp time = 2;
 }
 
 /// Service that is used by clients to communicate with bot factory.

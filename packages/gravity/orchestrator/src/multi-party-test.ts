@@ -4,43 +4,52 @@
 
 import { sleep } from '@dxos/async';
 import { NodeContainer } from '@dxos/botkit';
-import { Party } from '@dxos/client';
-import { range } from '@dxos/util';
+import { Client } from '@dxos/client/client';
 
-import { ITEM_TYPE, SLACK_FOR_BOT_UPDATES_MS, SLEEP_TIME } from './constants';
+import { SLEEP_TIME } from './constants';
 import { Orchestrator } from './orchestrator';
 
-const isAllFresh = (party: Party) => {
-  const now = Date.now();
-  const entities = party.database.select({
-    type: ITEM_TYPE
-  }).exec().entities;
-  return entities.every((e) => e.model.getProperty('ts') > now - SLACK_FOR_BOT_UPDATES_MS);
-};
+
+const MAX_MSG_BEHIND = 15;
 
 const multiItemStress = async () => {
   const orchestrator = new Orchestrator(new NodeContainer(['@swc-node/register']));
   await orchestrator.initialize();
 
-  let botsPerParty = 1;
+  let botsPerParty = 2;
 
   let botCount = 0;
 
   while(true) {
-    const party = await orchestrator.client.echo.createParty();
+    let lags: Array<number>;
 
-    for(const _ of range(botsPerParty)) {
-      const bot = await orchestrator.spawnBot({
-        localPath: require.resolve('./isolated-ping-bot')
-      }, party);
-      console.log(`botCount=${++botCount}`);
+    const client = new Client(orchestrator.config);
+    await client.initialize()
+    await client.halo.createProfile()
 
-      bot.
-    }
+    const party = await client.echo.createParty();
     
-    await sleep(SLEEP_TIME);
+    let currentBotCount = 0;
+    while(currentBotCount < botsPerParty) {
+      try {
+        await orchestrator.spawnBot({
+          localPath: require.resolve('./isolated-ping-bot')
+        }, party);
+        currentBotCount++
+        botCount++;
+      } catch {
+        console.log(`Failed to spawn bot`)
+      }
+      console.log(`botCount=${botCount}`);
+    }
 
-    const areAllFresh = orchestrator.client.echo.queryParties().value.every(party => isAllFresh(party));
+    await sleep(SLEEP_TIME);
+    await client.destroy()
+    
+    lags = await orchestrator.checkLag()
+    const maxLag = Math.max(...lags)
+    console.log(`maxLag=${maxLag}`)
+    const areAllFresh = maxLag < MAX_MSG_BEHIND;
     if(!areAllFresh) {
       break;
     }

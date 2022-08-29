@@ -84,7 +84,7 @@ export class Bot implements BotService {
     return new Stream(({ next, close }) => {
       const report = async () => {
         const partyDetails = await this.party?.getDetails();
-        next({ partyDetails });
+        next({ partyDetails, time: new Date() });
       };
       void report();
       const intervalHandle = setInterval(report, 1000);

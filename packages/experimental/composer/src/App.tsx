@@ -14,6 +14,9 @@ import { TextItemProvider } from './context/TextItemProvider';
 
 const clientConfig = {
   runtime: {
+    client: {
+      mode: 1 // local
+    },
     services: {
       signal: {
         server: 'wss://halo.dxos.org/.well-known/dx/signal'

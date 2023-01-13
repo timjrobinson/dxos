@@ -36,7 +36,7 @@ export class DataServiceHost {
     private readonly _itemManager: ItemManager,
     private readonly _itemDemuxer: ItemDemuxer,
     private readonly _writeStream?: FeedWriter<EchoEnvelope>
-  ) {}
+  ) { }
 
   /**
    * Returns a stream with a list of active entities in the space.
@@ -48,24 +48,19 @@ export class DataServiceHost {
       const entityInfo = (id: ItemID): EchoEnvelope => {
         const entity = this._itemManager.entities.get(id) ?? failUndefined();
         return {
-          itemId: id,
-          genesis: {
-            itemType: entity.type,
+          object: {
+            id,
+            schemaType: entity.type,
             modelType: entity.modelType,
             link:
               entity instanceof Link
                 ? {
-                    source: entity.sourceId,
-                    target: entity.targetId
-                  }
-                : undefined
-          },
-          itemMutation:
-            entity instanceof Item
-              ? {
-                  parentId: entity.parent?.id
+                  source: entity.sourceId,
+                  target: entity.targetId
                 }
-              : undefined
+                : undefined,
+            parentId: entity instanceof Item ? entity.parent?.id : undefined
+          }
         };
       };
 
@@ -89,7 +84,7 @@ export class DataServiceHost {
 
         next({
           added: Array.from(added).map((id) => entityInfo(id)),
-          deleted: Array.from(added).map((id): EchoEnvelope => ({ itemId: id }))
+          deleted: Array.from(added).map((id): EchoEnvelope => ({ object: { id } }))
         });
       };
 
@@ -124,7 +119,7 @@ export class DataServiceHost {
       next({ snapshot });
 
       return this._itemDemuxer.mutation.on((mutation) => {
-        if (mutation.data.itemId !== request.itemId) {
+        if (mutation.data.object.id !== request.itemId) {
           return;
         }
 

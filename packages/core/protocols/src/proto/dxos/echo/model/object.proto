@@ -4,6 +4,7 @@
 
 syntax = "proto3";
 
+// TODO(dmaretskyi): Rename to DocumentModel.
 package dxos.echo.model.object;
 
 //

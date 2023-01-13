@@ -7,11 +7,11 @@ import assert from 'node:assert';
 
 import { Event, trigger } from '@dxos/async';
 import { createId } from '@dxos/crypto';
-import { timed } from '@dxos/debug';
+import { checkType, timed } from '@dxos/debug';
 import { FeedWriter } from '@dxos/feed-store';
 import { PublicKey } from '@dxos/keys';
 import { Model, ModelFactory, ModelMessage, ModelType, StateManager } from '@dxos/model-factory';
-import { ItemID, ItemType } from '@dxos/protocols';
+import { ItemID, ItemType, TypedMessage } from '@dxos/protocols';
 import { EchoEnvelope } from '@dxos/protocols/proto/dxos/echo/feed';
 import { ModelSnapshot } from '@dxos/protocols/proto/dxos/echo/snapshot';
 
@@ -20,6 +20,8 @@ import { UnknownModelError } from '../errors';
 import { Entity } from './entity';
 import { Item } from './item';
 import { Link } from './link';
+import { Any } from '@dxos/protocols/src/proto/gen/google/protobuf';
+import { WithTypeUrl } from '@dxos/codec-protobuf';
 
 const log = debug('dxos:echo-db:item-manager');
 
@@ -76,7 +78,7 @@ export class ItemManager {
     private readonly _modelFactory: ModelFactory,
     private readonly _memberKey: PublicKey,
     private readonly _writeStream?: FeedWriter<EchoEnvelope>
-  ) {}
+  ) { }
 
   get entities() {
     return this._entities;
@@ -137,13 +139,14 @@ export class ItemManager {
     // Write Item Genesis block.
     log('Item Genesis', { itemId });
     await this._writeStream.write({
-      itemId,
-      genesis: {
-        itemType,
-        modelType
-      },
-      itemMutation: parentId ? { parentId } : undefined,
-      mutation
+      object: {
+        id: itemId,
+        schemaType: itemType,
+        modelType,
+        genesis: true,
+        itemMutation: parentId ? { parentId } : undefined,
+        mutation
+      }
     });
 
     // Unlocked by construct.
@@ -186,13 +189,14 @@ export class ItemManager {
     // Write Item Genesis block.
     log('Item Genesis:', itemId);
     await this._writeStream.write({
-      itemId,
-      genesis: {
-        itemType,
+      object: {
+        id: itemId,
+        schemaType: itemType,
         modelType,
-        link: { source, target }
-      },
-      mutation
+        genesis: true,
+        link: { source, target },
+        mutation
+      }
     });
 
     // Unlocked by construct.
@@ -210,7 +214,19 @@ export class ItemManager {
     // Convert model-specific outbound mutation to outbound envelope message.
     const outboundTransform =
       this._writeStream &&
-      createMappedFeedWriter<Uint8Array, EchoEnvelope>((mutation) => ({ itemId, mutation }), this._writeStream);
+      createMappedFeedWriter<Uint8Array, EchoEnvelope>(
+        (mutation) => ({
+          object: {
+            id: itemId,
+            mutation: checkType<TypedMessage>({
+              '@type': 'google.protobuf.Any',
+              type_url: '',
+              value: mutation
+            })
+          }
+        }),
+        this._writeStream
+      );
 
     // Create the model with the outbound stream.
     return this._modelFactory.createModel<Model>(modelType, itemId, snapshot, this._memberKey, outboundTransform);

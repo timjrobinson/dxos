@@ -47,7 +47,9 @@ describe('pipeline/Pipeline', () => {
     for (const msgIdx in range(messagesPerFeed)) {
       await pipeline.writer!.write({
         '@type': 'dxos.echo.feed.EchoEnvelope',
-        itemId: `local-${msgIdx}`
+        object: {
+          id: `local-${msgIdx}`
+        }
       });
     }
 

@@ -39,29 +39,28 @@ export class DataMirror {
       async (diff) => {
         for (const addedEntity of diff.added ?? []) {
           log(`Construct: ${JSON.stringify(addedEntity)}`);
-          assert(addedEntity.itemId);
-          assert(addedEntity.genesis);
-          assert(addedEntity.genesis.modelType);
+          assert(addedEntity.object.id);
+          assert(addedEntity.object.modelType);
 
           let entity: Entity<Model<any>>;
-          if (addedEntity.genesis.link) {
-            assert(addedEntity.genesis.link.source);
-            assert(addedEntity.genesis.link.target);
+          if (addedEntity.object.link) {
+            assert(addedEntity.object.link.source);
+            assert(addedEntity.object.link.target);
 
             entity = await this._itemManager.constructLink({
-              itemId: addedEntity.itemId,
-              itemType: addedEntity.genesis.itemType,
-              modelType: addedEntity.genesis.modelType,
-              source: addedEntity.genesis.link.source,
-              target: addedEntity.genesis.link.target,
+              itemId: addedEntity.object.id,
+              itemType: addedEntity.object.schemaType,
+              modelType: addedEntity.object.modelType,
+              source: addedEntity.object.link.source,
+              target: addedEntity.object.link.target,
               snapshot: {}
             });
           } else {
             entity = await this._itemManager.constructItem({
-              itemId: addedEntity.itemId,
-              itemType: addedEntity.genesis.itemType,
-              modelType: addedEntity.genesis.modelType,
-              parentId: addedEntity.itemMutation?.parentId,
+              itemId: addedEntity.object.id,
+              itemType: addedEntity.object.schemaType,
+              modelType: addedEntity.object.modelType,
+              parentId: addedEntity.object.parentId,
               snapshot: {}
             });
           }
@@ -87,7 +86,7 @@ export class DataMirror {
           assert(update.snapshot.model);
           entity._stateManager.resetToSnapshot(update.snapshot.model);
         } else if (update.mutation) {
-          if (update.mutation.data?.mutation) {
+          if (update.mutation.data.object.mutation) {
             assert(update.mutation.meta);
             await entity._stateManager.processMessage(
               {
@@ -96,7 +95,7 @@ export class DataMirror {
                 seq: update.mutation.meta.seq ?? failUndefined(),
                 timeframe: update.mutation.meta.timeframe ?? failUndefined()
               },
-              update.mutation.data.mutation ?? failUndefined()
+              update.mutation.data.object.mutation ?? failUndefined()
             );
           }
         }

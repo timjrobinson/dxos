@@ -53,11 +53,12 @@ describe('Item demuxer', () => {
 
     const itemId = createId();
     const message: EchoEnvelope = {
-      itemId,
-      genesis: {
-        itemType: 'dxos:item/test',
+      object: {
+        id: itemId,
+        genesis: true,
+        schemaType: 'dxos:item/test',
         modelType: TestModel.meta.type
-      }
+      },
     };
 
     await feedWriter.write(message);
@@ -122,8 +123,9 @@ describe('Item demuxer', () => {
 
     void processEchoMessage(
       checkType<EchoEnvelope>({
-        itemId: 'foo',
-        genesis: {
+        object: {
+          id: 'foo',
+          genesis: true,
           modelType: TestModel.meta.type
         }
       })
@@ -131,8 +133,9 @@ describe('Item demuxer', () => {
 
     void processEchoMessage(
       checkType<EchoEnvelope>({
-        itemId: 'bar',
-        genesis: {
+        object: {
+          id: 'bar',
+          genesis: true,
           modelType: ObjectModel.meta.type
         }
       })

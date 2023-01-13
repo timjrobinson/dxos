@@ -35,7 +35,7 @@ export class ItemDemuxer {
     private readonly _itemManager: ItemManager,
     private readonly _modelFactory: ModelFactory,
     private readonly _options: ItemDemuxerOptions = {}
-  ) {}
+  ) { }
 
   open(): EchoProcessor {
     this._modelFactory.registered.on(async (model) => {
@@ -50,69 +50,69 @@ export class ItemDemuxer {
     // TODO(burdon): Should this implement some "back-pressure" (hints) to the SpaceProcessor?
     return async (message: IEchoStream) => {
       const {
-        data: { itemId, genesis, itemMutation, mutation, snapshot },
+        data: { object },
         meta
       } = message;
-      assert(itemId);
+      assert(object.id);
 
       //
       // New item.
       //
-      if (genesis) {
-        const { itemType, modelType } = genesis;
+      if (object.genesis) {
+        const { schemaType, modelType, link, itemMutation } = object;
         assert(modelType);
 
         const modelOpts: ModelConstructionOptions = {
-          itemId,
+          itemId: object.id,
           modelType,
           snapshot: {
-            mutations: mutation ? [{ mutation, meta }] : undefined
+            mutations: object.mutation ? [{ mutation: object.mutation, meta }] : undefined
           }
         };
 
         let entity: Entity<any>;
-        if (genesis.link) {
+        if (link) {
           entity = await this._itemManager.constructLink({
             ...modelOpts,
-            itemType,
-            source: genesis.link.source ?? failUndefined(),
-            target: genesis.link.target ?? failUndefined()
+            itemType: schemaType,
+            source: link.source ?? failUndefined(),
+            target: link.target ?? failUndefined()
           });
         } else {
           entity = await this._itemManager.constructItem({
             ...modelOpts,
-            parentId: itemMutation?.parentId,
-            itemType
+            parentId: object.parentId ?? itemMutation?.parentId,
+            itemType: schemaType
           });
         }
 
-        assert(entity.id === itemId);
+        assert(entity.id === object.id);
       }
 
       //
       // Set parent item references.
       //
-      if (itemMutation) {
-        const item = this._itemManager.getItem(itemId);
+      if (object.itemMutation) {
+        const item = this._itemManager.getItem(object.id);
         assert(item);
 
-        item._processMutation(itemMutation, (itemId: ItemID) => this._itemManager.getItem(itemId));
+        item._processMutation(object.itemMutation, (itemId: ItemID) => this._itemManager.getItem(itemId));
       }
 
       //
       // Model mutations.
       //
-      if (mutation && !genesis) {
-        assert(message.data.mutation);
-        const modelMessage: ModelMessage<Uint8Array> = { meta, mutation };
+      if (object.mutation && !object.genesis) {
+        assert(message.data.object.mutation);
+        const modelMessage: ModelMessage<Uint8Array> = { meta, mutation: object.mutation.value };
 
         // Forward mutations to the item's stream.
-        await this._itemManager.processModelMessage(itemId, modelMessage);
+        await this._itemManager.processModelMessage(object.id, modelMessage);
       }
 
-      if (snapshot) {
-        const entity = this._itemManager.entities.get(itemId) ?? failUndefined();
-        entity._stateManager.resetToSnapshot(snapshot);
+      if (object.snapshot) {
+        const entity = this._itemManager.entities.get(object.id) ?? failUndefined();
+        entity._stateManager.resetToSnapshot(object.snapshot);
       }
 
       this.mutation.emit(message);

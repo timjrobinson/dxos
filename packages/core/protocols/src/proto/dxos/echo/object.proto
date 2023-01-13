@@ -1,0 +1,73 @@
+//
+// Copyright 2020 DXOS.org
+//
+
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+
+import "dxos/halo/credentials.proto";
+import "dxos/echo/snapshot.proto";
+import "dxos/echo/timeframe.proto";
+
+package dxos.echo.object;
+
+/**
+  * State or an update of an object in the ECHO database.
+  */
+message EchoObject {
+  string id = 1;
+  optional string model_type = 2;
+  optional string parent_id = 3;
+
+  /**
+    * Soft-delete:
+    *  null - noop
+    *  true - delete
+    *  false - restore
+    */
+  optional string deleted = 4;
+
+  /// Deprecated.
+  optional LinkData link = 5;
+
+  /// Deprecated. Move to ObjectModel proto.
+  optional string schema_type = 6;
+
+  /// Deprecated.
+  optional ItemMutation item_mutation = 7;
+
+
+  oneof action {
+    /// This message indicates a creation of a new object.
+    bool genesis = 20;
+    /// Used by DataService to notify that this object should be removed from the set of tracked objects.
+    bool erase = 21;
+  }
+
+  oneof payload {
+    google.protobuf.Any snapshot = 30;
+    google.protobuf.Any mutation = 31;
+  }
+}
+
+// TODO(burdon): Document (different from parent/child).?
+// TODO(dmaretskyi): Refactor so that entity mutation message is oneof between item mutation and link mutation: items have parents, and links have from/to.
+message LinkData {
+  string source = 1;
+  string target = 2;
+}
+
+/**
+ * Item mutation.
+ */
+ message ItemMutation {
+  enum Action {
+    NOOP = 0;
+    DELETE = 1;
+    RESTORE = 2;
+  }
+
+  optional string parent_id = 1;  // TODO(burdon): Define Action type?
+  optional Action action = 2;
+}

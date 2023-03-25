@@ -25,6 +25,7 @@ import { HaloAdmissionCredentials } from '@dxos/protocols/proto/dxos/halo/invita
 import { ComplexSet } from '@dxos/util';
 
 import { TrustedKeySetAuthVerifier } from './authenticator';
+import { formatDid } from '@dxos/protocols';
 
 /**
  * Timeout for the device to be added to the trusted set during auth.
@@ -181,6 +182,7 @@ export class Identity {
           assertion: {
             '@type': 'dxos.halo.credentials.AdmittedFeed',
             spaceKey: this.haloSpaceKey,
+            memberDid: formatDid(this.identityKey),
             deviceKey,
             identityKey: this.identityKey,
             designation: AdmittedFeed.Designation.CONTROL
@@ -191,6 +193,7 @@ export class Identity {
           assertion: {
             '@type': 'dxos.halo.credentials.AdmittedFeed',
             spaceKey: this.haloSpaceKey,
+            memberDid: formatDid(this.identityKey),
             deviceKey,
             identityKey: this.identityKey,
             designation: AdmittedFeed.Designation.DATA

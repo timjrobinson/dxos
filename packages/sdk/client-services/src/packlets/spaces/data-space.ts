@@ -19,6 +19,7 @@ import { FeedStore } from '@dxos/feed-store';
 import { Keyring } from '@dxos/keyring';
 import { PublicKey } from '@dxos/keys';
 import { ModelFactory } from '@dxos/model-factory';
+import { formatDid } from '@dxos/protocols';
 import { FeedMessage } from '@dxos/protocols/proto/dxos/echo/feed';
 import { AdmittedFeed, Credential } from '@dxos/protocols/proto/dxos/halo/credentials';
 import { GossipMessage } from '@dxos/protocols/proto/dxos/mesh/teleport/gossip';
@@ -207,6 +208,7 @@ export class DataSpace {
           assertion: {
             '@type': 'dxos.halo.credentials.AdmittedFeed',
             spaceKey: this.key,
+            memberDid: formatDid(this._signingContext.identityKey),
             deviceKey: this._signingContext.deviceKey,
             identityKey: this._signingContext.identityKey,
             designation: AdmittedFeed.Designation.CONTROL
@@ -224,6 +226,7 @@ export class DataSpace {
           assertion: {
             '@type': 'dxos.halo.credentials.AdmittedFeed',
             spaceKey: this.key,
+            memberDid: formatDid(this._signingContext.identityKey),
             deviceKey: this._signingContext.deviceKey,
             identityKey: this._signingContext.identityKey,
             designation: AdmittedFeed.Designation.DATA

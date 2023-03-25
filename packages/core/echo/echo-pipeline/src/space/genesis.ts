@@ -5,6 +5,7 @@
 import { createCredential } from '@dxos/credentials';
 import { failUndefined } from '@dxos/debug';
 import { Keyring } from '@dxos/keyring';
+import { formatDid } from '@dxos/protocols';
 import { AdmittedFeed, SpaceMember } from '@dxos/protocols/proto/dxos/halo/credentials';
 
 import { Space } from './space';
@@ -30,6 +31,7 @@ export const spaceGenesis = async (keyring: Keyring, signingContext: SigningCont
       assertion: {
         '@type': 'dxos.halo.credentials.SpaceMember',
         spaceKey: space.key,
+        memberDid: formatDid(signingContext.identityKey),
         role: SpaceMember.Role.ADMIN,
         profile: signingContext.profile,
         genesisFeedKey: space.controlFeedKey ?? failUndefined()
@@ -41,6 +43,7 @@ export const spaceGenesis = async (keyring: Keyring, signingContext: SigningCont
       assertion: {
         '@type': 'dxos.halo.credentials.AdmittedFeed',
         spaceKey: space.key,
+        memberDid: formatDid(signingContext.identityKey),
         identityKey: signingContext.identityKey,
         deviceKey: signingContext.deviceKey,
         designation: AdmittedFeed.Designation.CONTROL
@@ -52,6 +55,7 @@ export const spaceGenesis = async (keyring: Keyring, signingContext: SigningCont
       assertion: {
         '@type': 'dxos.halo.credentials.AdmittedFeed',
         spaceKey: space.key,
+        memberDid: formatDid(signingContext.identityKey),
         identityKey: signingContext.identityKey,
         deviceKey: signingContext.deviceKey,
         designation: AdmittedFeed.Designation.DATA

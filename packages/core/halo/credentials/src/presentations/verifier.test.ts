@@ -13,6 +13,7 @@ import { describe, test } from '@dxos/test';
 import { createCredential } from '../credentials';
 import { signPresentation } from './presentation';
 import { verifyPresentation, verifyPresentationSignature } from './verifier';
+import { formatDid } from '@dxos/protocols';
 
 describe('presentation verifier', () => {
   describe('chain', () => {
@@ -40,6 +41,7 @@ describe('presentation verifier', () => {
         assertion: {
           '@type': 'dxos.halo.credentials.SpaceMember',
           spaceKey,
+          memberDid: formatDid(subject),
           role: SpaceMember.Role.ADMIN,
           genesisFeedKey: PublicKey.random()
         },
@@ -85,6 +87,7 @@ describe('presentation verifier', () => {
         assertion: {
           '@type': 'dxos.halo.credentials.SpaceMember',
           spaceKey,
+          memberDid: formatDid(subject),
           role: SpaceMember.Role.ADMIN,
           genesisFeedKey: PublicKey.random()
         },
@@ -122,6 +125,7 @@ describe('presentation verifier', () => {
         assertion: {
           '@type': 'dxos.halo.credentials.SpaceMember',
           spaceKey,
+          memberDid: formatDid(subject),
           role: SpaceMember.Role.ADMIN,
           genesisFeedKey: PublicKey.random()
         },
@@ -150,6 +154,7 @@ describe('presentation verifier', () => {
         assertion: {
           '@type': 'dxos.halo.credentials.SpaceMember',
           spaceKey,
+          memberDid: formatDid(subject),
           role: SpaceMember.Role.ADMIN,
           genesisFeedKey: PublicKey.random()
         },

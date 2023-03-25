@@ -12,6 +12,7 @@ import { describe, test } from '@dxos/test';
 
 import { createCredential } from './credential-factory';
 import { verifyCredential } from './verifier';
+import { formatDid } from '@dxos/protocols';
 
 describe('verifier', () => {
   describe('no chain', () => {
@@ -25,6 +26,7 @@ describe('verifier', () => {
         assertion: {
           '@type': 'dxos.halo.credentials.SpaceMember',
           spaceKey,
+          memberDid: formatDid(subject),
           role: SpaceMember.Role.ADMIN,
           genesisFeedKey: PublicKey.random()
         },
@@ -46,6 +48,7 @@ describe('verifier', () => {
         assertion: {
           '@type': 'dxos.halo.credentials.SpaceMember',
           spaceKey,
+          memberDid: formatDid(subject),
           role: SpaceMember.Role.ADMIN,
           genesisFeedKey: PublicKey.random()
         },
@@ -72,6 +75,7 @@ describe('verifier', () => {
         assertion: {
           '@type': 'dxos.halo.credentials.SpaceMember',
           spaceKey,
+          memberDid: formatDid(subject),
           role: SpaceMember.Role.ADMIN,
           genesisFeedKey: PublicKey.random()
         },
@@ -98,6 +102,7 @@ describe('verifier', () => {
         assertion: {
           '@type': 'dxos.halo.credentials.SpaceMember',
           spaceKey,
+          memberDid: formatDid(subject),
           role: SpaceMember.Role.ADMIN,
           genesisFeedKey: PublicKey.random()
         },
@@ -125,6 +130,7 @@ describe('verifier', () => {
         assertion: {
           '@type': 'dxos.halo.credentials.SpaceMember',
           spaceKey,
+          memberDid: formatDid(subject),
           role: SpaceMember.Role.ADMIN,
           genesisFeedKey: PublicKey.random()
         },
@@ -167,6 +173,7 @@ describe('verifier', () => {
         assertion: {
           '@type': 'dxos.halo.credentials.SpaceMember',
           spaceKey,
+          memberDid: formatDid(subject),
           role: SpaceMember.Role.ADMIN,
           genesisFeedKey: PublicKey.random()
         },
@@ -204,6 +211,7 @@ describe('verifier', () => {
         assertion: {
           '@type': 'dxos.halo.credentials.SpaceMember',
           spaceKey,
+          memberDid: formatDid(subject),
           role: SpaceMember.Role.ADMIN,
           genesisFeedKey: PublicKey.random()
         },
@@ -246,6 +254,7 @@ describe('verifier', () => {
         assertion: {
           '@type': 'dxos.halo.credentials.SpaceMember',
           spaceKey,
+          memberDid: formatDid(subject),
           role: SpaceMember.Role.ADMIN,
           genesisFeedKey: PublicKey.random()
         },
@@ -288,6 +297,7 @@ describe('verifier', () => {
         assertion: {
           '@type': 'dxos.halo.credentials.SpaceMember',
           spaceKey,
+          memberDid: formatDid(subject),
           role: SpaceMember.Role.ADMIN,
           genesisFeedKey: PublicKey.random()
         },
@@ -302,6 +312,7 @@ describe('verifier', () => {
         assertion: {
           '@type': 'dxos.halo.credentials.SpaceMember',
           spaceKey,
+          memberDid: formatDid(subject),
           role: SpaceMember.Role.ADMIN,
           genesisFeedKey: PublicKey.random()
         },
@@ -339,6 +350,7 @@ describe('verifier', () => {
         assertion: {
           '@type': 'dxos.halo.credentials.SpaceMember',
           spaceKey,
+          memberDid: formatDid(subject),
           role: SpaceMember.Role.ADMIN,
           genesisFeedKey: PublicKey.random()
         },
@@ -403,6 +415,7 @@ describe('verifier', () => {
         assertion: {
           '@type': 'dxos.halo.credentials.SpaceMember',
           spaceKey,
+          memberDid: formatDid(subject),
           role: SpaceMember.Role.ADMIN,
           genesisFeedKey: PublicKey.random()
         },
@@ -454,6 +467,7 @@ describe('verifier', () => {
         assertion: {
           '@type': 'dxos.halo.credentials.SpaceMember',
           spaceKey,
+          memberDid: formatDid(subject),
           role: SpaceMember.Role.ADMIN,
           genesisFeedKey: PublicKey.random()
         },

@@ -17,6 +17,7 @@ import { Timeframe } from '@dxos/timeframe';
 
 import { valueEncoding } from '../common';
 import { ControlPipeline } from './control-pipeline';
+import { formatDid } from '@dxos/protocols';
 
 describe('space/control-pipeline', () => {
   test('admits feeds', async () => {
@@ -93,6 +94,7 @@ describe('space/control-pipeline', () => {
             assertion: {
               '@type': 'dxos.halo.credentials.AdmittedFeed',
               spaceKey,
+              memberDid: formatDid(identityKey),
               identityKey,
               deviceKey,
               designation: AdmittedFeed.Designation.CONTROL
@@ -117,6 +119,7 @@ describe('space/control-pipeline', () => {
             assertion: {
               '@type': 'dxos.halo.credentials.AdmittedFeed',
               spaceKey,
+              memberDid: formatDid(identityKey),
               identityKey,
               deviceKey,
               designation: AdmittedFeed.Designation.DATA
@@ -145,6 +148,7 @@ describe('space/control-pipeline', () => {
               assertion: {
                 '@type': 'dxos.halo.credentials.AdmittedFeed',
                 spaceKey,
+                memberDid: formatDid(identityKey),
                 identityKey,
                 deviceKey,
                 designation: AdmittedFeed.Designation.DATA

@@ -10,6 +10,8 @@ import { describe, test } from '@dxos/test';
 
 import { createCredential, verifyCredential } from '../credentials';
 import { SpaceStateMachine } from './space-state-machine';
+import { formatDid } from '@dxos/protocols';
+import { PublicKey } from '@dxos/keys';
 
 describe('SpaceStateMachine', () => {
   test('basic space creation', async () => {
@@ -44,6 +46,7 @@ describe('SpaceStateMachine', () => {
           assertion: {
             '@type': 'dxos.halo.credentials.SpaceMember',
             spaceKey: space,
+            memberDid: formatDid(identity),
             role: SpaceMember.Role.ADMIN,
             genesisFeedKey: feed
           },
@@ -74,6 +77,7 @@ describe('SpaceStateMachine', () => {
           assertion: {
             '@type': 'dxos.halo.credentials.AdmittedFeed',
             spaceKey: space,
+            memberDid: formatDid(identity),
             identityKey: identity,
             deviceKey: device,
             designation: AdmittedFeed.Designation.CONTROL
@@ -145,6 +149,7 @@ describe('SpaceStateMachine', () => {
           assertion: {
             '@type': 'dxos.halo.credentials.SpaceMember',
             spaceKey: space,
+            memberDid: formatDid(identity),
             role: SpaceMember.Role.ADMIN,
             genesisFeedKey: feed
           },
@@ -175,6 +180,7 @@ describe('SpaceStateMachine', () => {
           assertion: {
             '@type': 'dxos.halo.credentials.SpaceMember',
             spaceKey: space,
+            memberDid: formatDid(identity),
             role: SpaceMember.Role.MEMBER,
             genesisFeedKey: feed
           },
@@ -242,6 +248,7 @@ describe('SpaceStateMachine', () => {
           assertion: {
             '@type': 'dxos.halo.credentials.SpaceMember',
             spaceKey: haloSpace,
+            memberDid: formatDid(identity),
             role: SpaceMember.Role.ADMIN,
             genesisFeedKey: feed
           },
@@ -316,6 +323,7 @@ describe('SpaceStateMachine', () => {
       assertion: {
         '@type': 'dxos.halo.credentials.AdmittedFeed',
         spaceKey: haloSpace,
+        memberDid: formatDid(identity),
         deviceKey: device2,
         designation: AdmittedFeed.Designation.CONTROL,
         identityKey: identity

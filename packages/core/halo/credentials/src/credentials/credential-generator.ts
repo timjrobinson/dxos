@@ -4,7 +4,7 @@
 
 import { Signer } from '@dxos/crypto';
 import { PublicKey } from '@dxos/keys';
-import { TypedMessage } from '@dxos/protocols';
+import { formatDid, TypedMessage } from '@dxos/protocols';
 import { FeedMessage } from '@dxos/protocols/proto/dxos/echo/feed';
 import { AdmittedFeed, Credential, ProfileDocument, SpaceMember } from '@dxos/protocols/proto/dxos/halo/credentials';
 
@@ -49,6 +49,7 @@ export class CredentialGenerator {
         assertion: {
           '@type': 'dxos.halo.credentials.SpaceMember',
           spaceKey,
+          memberDid: formatDid(this._identityKey),
           role: SpaceMember.Role.ADMIN,
           profile: creatorProfile,
           genesisFeedKey: controlKey
@@ -80,6 +81,7 @@ export class CredentialGenerator {
         assertion: {
           '@type': 'dxos.halo.credentials.SpaceMember',
           spaceKey,
+          memberDid: formatDid(this._identityKey),
           role: SpaceMember.Role.MEMBER,
           genesisFeedKey
         }
@@ -122,6 +124,7 @@ export class CredentialGenerator {
       assertion: {
         '@type': 'dxos.halo.credentials.AdmittedFeed',
         spaceKey,
+        memberDid: formatDid(this._identityKey),
         identityKey: this._identityKey,
         deviceKey: this._deviceKey,
         designation
@@ -179,6 +182,7 @@ export const createAdmissionCredentials = async (
       assertion: {
         '@type': 'dxos.halo.credentials.SpaceMember',
         spaceKey,
+        memberDid: formatDid(identityKey),
         role: SpaceMember.Role.ADMIN, // TODO(burdon): Configure.
         profile,
         genesisFeedKey

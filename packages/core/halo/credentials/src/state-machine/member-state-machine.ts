@@ -23,9 +23,9 @@ export interface MemberInfo {
  */
 export class MemberStateMachine {
   /**
-   * Member IDENTITY key => info
+   * Member member DID => info
    */
-  private _members = new ComplexMap<PublicKey, MemberInfo>(PublicKey.hash);
+  private _members = new Map<string, MemberInfo>();
 
   readonly onMemberAdmitted = new Callback<AsyncCallback<MemberInfo>>();
 
@@ -34,11 +34,11 @@ export class MemberStateMachine {
     private readonly _spaceKey: PublicKey
   ) {}
 
-  get members(): ReadonlyMap<PublicKey, MemberInfo> {
+  get members(): ReadonlyMap<string, MemberInfo> {
     return this._members;
   }
 
-  getRole(member: PublicKey): SpaceMember.Role | undefined {
+  getRole(member: string): SpaceMember.Role | undefined {
     return this._members.get(member)?.assertion.role;
   }
 

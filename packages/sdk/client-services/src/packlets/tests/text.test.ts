@@ -14,6 +14,8 @@ import { Doc } from '@dxos/text-model';
 import { ComplexMap, ComplexSet, range } from '@dxos/util';
 
 import { joinCommonSpace, TestBuilder } from '../testing';
+import { Trigger } from '@dxos/async';
+import assert from 'node:assert';
 
 // log.config({ filter: 'text.test:debug,error' });
 
@@ -41,6 +43,7 @@ const assertState = async (model: Model, real: Real) => {
         }
 
         const [document] = space.db.query((obj) => !!obj.content).objects;
+        assert(document, 'Document not found.')
         const text = (document.content.doc as Doc).getText('utf8');
         if (text.toString() !== model.text) {
           throw new Error(
@@ -51,7 +54,7 @@ const assertState = async (model: Model, real: Real) => {
         throw new Error(`Expected peer to be in space: ${peerId.truncate()}`);
       }
     }
-  }, 1000);
+  }, 5_000);
 };
 
 class CreatePeerCommand implements fc.AsyncCommand<Model, Real> {
@@ -62,7 +65,7 @@ class CreatePeerCommand implements fc.AsyncCommand<Model, Real> {
   }
 
   async run(model: Model, real: Real) {
-    log.debug('run', { command: this.toString() });
+    log.info('run', { command: this.toString() });
     model.peers.add(this.peerId);
 
     // TODO(wittjosiah): Too many steps to creat client.
@@ -110,7 +113,7 @@ class InsertTextCommand implements fc.AsyncCommand<Model, Real> {
   }
 
   async run(model: Model, real: Real) {
-    log.debug('run', { command: this.toString() });
+    log.info('run', { command: this.toString() });
     model.text = model.text.slice(0, this.index) + this.text + model.text.slice(this.index);
 
     const peer = real.peers.get(this.peerId);
@@ -136,7 +139,7 @@ class RemoveTextCommand implements fc.AsyncCommand<Model, Real> {
   }
 
   async run(model: Model, real: Real) {
-    log.debug('run', { command: this.toString() });
+    log.info('run', { command: this.toString() });
     model.text = model.text.slice(0, this.index) + model.text.slice(this.index + this.length);
 
     const peer = real.peers.get(this.peerId);
@@ -153,22 +156,84 @@ class RemoveTextCommand implements fc.AsyncCommand<Model, Real> {
   }
 }
 
-describe('Client text replication', () => {
-  test('property-based tests', async () => {
+class RunMutationsCommand implements fc.AsyncCommand<Model, Real> {
+  constructor(readonly peerId: PublicKey, readonly mutations: Mutation[]) {}
+
+  check(model: Model) {
+    return model.peers.has(this.peerId);
+  }
+
+  async run(model: Model, real: Real) {
+    log.info('run', { command: this.toString() });
+
+    const peer = real.peers.get(this.peerId);
+    const space = peer!.getSpace(real.spaceKey)!;
+    const [document] = space.db.query((obj) => !!obj.content).objects;
+    const text = (document.content.doc as Doc).getText('utf8');
+
+    for(const mutation of this.mutations) {
+      switch(mutation.kind) {
+        case 'insert': {
+          const index = Math.min(mutation.index, model.text.length);
+
+          model.text = model.text.slice(0, index) + mutation.text + model.text.slice(index);
+
+          text.insert(index, mutation.text);
+          break;
+        }
+        case 'remove': {
+          const index = Math.min(mutation.index, model.text.length);
+          const length = Math.min(mutation.length, model.text.length - index);
+
+          model.text = model.text.slice(0, index) + model.text.slice(index + length);
+
+          text.delete(index, length);
+
+          break;
+        }
+      }
+    }
+
+    await assertState(model, real);
+  }
+
+  toString() {
+    return `RunMutations(peer=${this.peerId.truncate()}, count=${this.mutations.length})`;
+  }
+}
+
+type Mutation = {
+  kind: 'insert';
+  index: number;
+  text: string;
+} | {
+  kind: 'remove';
+  index: number;
+  length: number;
+}
+
+describe.only('Client text replication', () => {
+  test.only('property-based tests', async () => {
     // TODO(wittjosiah): Increasing to 5 causes failures.
-    const peerIds = range(3).map(() => PublicKey.random());
+    const peerIds = range(10).map(() => PublicKey.random());
     const peerId = fc.constantFrom(...peerIds);
 
     const allCommands = [
       peerId.map((peerId) => new CreatePeerCommand(peerId)),
+      // fc
+      //   .tuple(peerId, fc.integer({ min: 0, max: 100 }), fc.unicodeString())
+      //   .map(([peerId, index, text]) => new InsertTextCommand(peerId, index, text)),
+      // fc
+      //   .tuple(peerId, fc.integer({ min: 0, max: 100 }), fc.integer({ min: 1, max: 10 }))
+      //   .map(([peerId, index, length]) => new RemoveTextCommand(peerId, index, length)),
       fc
-        .tuple(peerId, fc.integer({ min: 0, max: 100 }), fc.unicodeString())
-        .map(([peerId, index, text]) => new InsertTextCommand(peerId, index, text)),
-      fc
-        .tuple(peerId, fc.integer({ min: 0, max: 100 }), fc.integer({ min: 1, max: 10 }))
-        .map(([peerId, index, length]) => new RemoveTextCommand(peerId, index, length))
+        .tuple(peerId, fc.array(fc.oneof(
+          fc.tuple(fc.integer({ min: 0, max: 100 }), fc.unicodeString()).map(([index, text]): Mutation => ({ kind: 'insert', index, text })),
+          fc.tuple(fc.integer({ min: 0, max: 100 }), fc.integer({ min: 1, max: 10 })).map(([index, length]): Mutation => ({ kind: 'remove', index, length })),
+        ), { minLength: 1, maxLength: 30 }))
+        .map(([peerId, mutations]) => new RunMutationsCommand(peerId, mutations))
     ];
-    const commands = fc.commands(allCommands, { size: 'medium' });
+    const commands = fc.commands(allCommands, { size: 'large' });
 
     const model = fc.asyncProperty(commands, async (commands) => {
       const peers = new ComplexMap<PublicKey, Client>(PublicKey.hash);
@@ -186,6 +251,7 @@ describe('Client text replication', () => {
       await fc.asyncModelRun(setup, commands);
 
       await Promise.all(Array.from(peers.values()).map((peer) => peer.destroy()));
+      log.break();
     });
 
     const examples: [commands: Iterable<fc.AsyncCommand<Model, Real, boolean>>][] = [
@@ -201,6 +267,6 @@ describe('Client text replication', () => {
 
     await fc.assert(model, { examples });
   })
-    .onlyEnvironments('node')
+    // .onlyEnvironments('node')
     .timeout(300_000);
 });

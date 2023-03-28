@@ -88,6 +88,20 @@ message SpaceAdmissionRequest {
   dxos.keys.PublicKey data_feed_key = 4;
 }
 
+message AdmissionRequest {
+  oneof kind {
+    SpaceAdmissionRequest space = 1;
+    HaloAdmissionCredentials halo = 2;  
+  }
+}
+
+message AdmissionCredentials {
+  oneof kind {
+    SpaceAdmissionCredentials space = 1;
+    HaloAdmissionCredentials halo = 2;  
+  }
+}
+
 message SpaceAdmissionCredentials {
   /// Credential of type `SpaceMember` that grants Guest's identity access to the space.
   dxos.halo.credentials.Credential credential = 1;
@@ -99,7 +113,8 @@ message SpaceAdmissionCredentials {
   optional dxos.echo.timeframe.TimeframeVector data_timeframe = 3;
 }
 
-service SpaceHostService {
+// Generic invitations p2p service.
+service InvitationHostService {
   /// Introduce Guest to the host.
   rpc Introduce(Introduction) returns (IntroductionResponse);
 
@@ -107,5 +122,5 @@ service SpaceHostService {
   rpc Authenticate(AuthenticationRequest) returns (AuthenticationResponse);
 
   /// Process admission credentials.
-  rpc RequestAdmission(SpaceAdmissionRequest) returns (SpaceAdmissionCredentials);
+  rpc RequestAdmission(AdmissionRequest) returns (AdmissionCredentials);
 }

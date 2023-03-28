@@ -22,14 +22,16 @@ import { IdentityManager } from '../identity';
 /**
  * Adapts invitation service observable to client/service stream.
  */
-export abstract class AbstractInvitationsService<T = void> implements InvitationsService {
+export abstract class GenericInvitationsService<T = void> implements InvitationsService {
   private readonly _createInvitations = new Map<string, CancellableInvitationObservable>();
   private readonly _acceptInvitations = new Map<string, AuthenticatingInvitationObservable>();
 
+  private readonly _handlerFactories = new Map<InvatationKind, (invitation: Invivation) => Promise<InvitationHandlerX>>(); 
+
+
   // prettier-ignore
   protected constructor (
-    private readonly _identityManager: IdentityManager,
-    private readonly _getInvitationsHandler: Provider<InvitationsHandler<T>>
+    
   ) {}
 
   // TODO(burdon): Guest/host label.
@@ -39,17 +41,22 @@ export abstract class AbstractInvitationsService<T = void> implements Invitation
     };
   }
 
-  abstract getContext(invitation: Invitation): T;
+  registerHandler(kind, factory) {
+    this._handlerFactories.set(kind, factory)
+  }
+
+  private _getHandler(invitation: Invitation): Promise<InvitationHandlerX> {
+    return this._handlerFactories.get(invataiton.kind)(invitation)
+  }
 
   createInvitation(invitation: Invitation): Stream<Invitation> {
     return new Stream<Invitation>(({ next, close }) => {
-      const invitationsHandler: InvitationsHandler<T> = this._getInvitationsHandler();
-      const context = this.getContext(invitation);
+      const handler = this._getHandler(invitaiotn)
       log('stream opened', this.getLoggingContext());
 
       let invitationId: string;
       const { type, swarmKey, authMethod } = invitation;
-      const observable = invitationsHandler.createInvitation(context, { type, swarmKey, authMethod });
+      const observable = invitationsHandler.createInvitation(handler, { type, swarmKey, authMethod });
       observable.subscribe({
         onConnecting: (invitation) => {
           assert(invitation.invitationId);
@@ -107,10 +114,10 @@ export abstract class AbstractInvitationsService<T = void> implements Invitation
   acceptInvitation(invitation: Invitation, options?: InvitationsOptions): Stream<Invitation> {
     return new Stream<Invitation>(({ next, close }) => {
       log('stream opened', this.getLoggingContext());
-      const invitationsHandler = this._getInvitationsHandler();
+      const handlerX = this._getHandler(invitaiotn)
 
       let invitationId: string;
-      const observable = invitationsHandler.acceptInvitation(invitation, options);
+      const observable = invitationsHandler.acceptInvitation(handlerX, invitation, options);
       observable.subscribe({
         onConnecting: (invitation) => {
           assert(invitation.invitationId);
@@ -187,3 +194,13 @@ export abstract class AbstractInvitationsService<T = void> implements Invitation
     }
   }
 }
+
+
+declare const service: GenericInvitationsService
+
+service.registerHandler(HALO, (invitation) => new HaloInvHandler(keyring, identManager,...))
+
+service.registerHandler(SPACE, (invitation) => {
+  const space = this._dataspaceManager.getSPace(invitaiotn.spaceKey);
+  return new SpaceInvHandler(keyring, this._dataspaceManager, space,...)
+})

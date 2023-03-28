@@ -229,16 +229,20 @@ service SpacesService {
  * Represents the invitation state passed between client and service.
  */
 message Invitation {
+
+  enum Kind {
+    SPACE = 1;
+    HALO = 2;
+  }
+
+
   enum Type {
     /// Requires both to be online with OTP to complete key exchange.
     INTERACTIVE = 0;
-    /// Interactive without OTP.
-    /// @deprecated Use authMethod.
-    INTERACTIVE_TESTING = 1;
     /// Guest's identity key is known; invitation can be accepted by any valid peer.
     OFFLINE = 2;
-    /// Multiple-use invitation with OTP.
-    MULTIUSE_TESTING = 3;
+    /// Multiple-use invitation.
+    MULTIUSE = 3;
   }
 
   enum State {
@@ -265,6 +269,9 @@ message Invitation {
 
   /// Determined when created.
   optional Type type = 2;
+
+  // TODO: Fix numbering.
+  Kind kind = 13;
 
   optional dxos.halo.invitations.AuthMethod auth_method = 10; // TODO: Fix numbering.
 

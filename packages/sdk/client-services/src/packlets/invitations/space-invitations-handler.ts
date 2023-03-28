@@ -35,7 +35,8 @@ import {
   IntroductionResponse,
   SpaceAdmissionCredentials,
   SpaceAdmissionRequest,
-  SpaceHostService
+  SpaceHostService,
+  AdmissionCredentials
 } from '@dxos/protocols/proto/dxos/halo/invitations';
 import { ExtensionContext, RpcExtension } from '@dxos/teleport';
 
@@ -43,16 +44,63 @@ import { DataSpace, DataSpaceManager } from '../spaces';
 
 const MAX_OTP_ATTEMPTS = 3;
 
+interface InvitationHandlerX {
+  /**
+   *             }
+              // 3. Generate a pair of keys for our feeds.
+              const controlFeedKey = await this._keyring.createKey();
+              const dataFeedKey = await this._keyring.createKey();
+              identityKey: this._signingContext.identityKey,
+                  deviceKey: this._signingContext.deviceKey,
+                  
+
+   */
+  createAdmissionRequest(): Promise<AdmissionRequest>;
+
+  /**
+   * 
+              const space = await this._spaceManager.acceptSpace({
+                spaceKey: assertion.spaceKey,
+                genesisFeedKey: assertion.genesisFeedKey,
+                controlTimeframe,
+                dataTimeframe
+              });
+
+              // Record credential in our HALO.
+              await this._signingContext.recordCredential(credential);
+   */
+  accept(credentials: AdmissionCredentials): Promise<void>;
+
+  /*
+            log('writing guest credentials', { host: this._signingContext.deviceKey, guest: deviceKey });
+            // TODO(burdon): Check if already admitted.
+            const credentials: FeedMessage.Payload[] = await createAdmissionCredentials(
+              this._signingContext.credentialSigner,
+              identityKey,
+              space.key,
+              space.inner.genesisFeedKey,
+              guestProfile
+            );
+
+            // TODO(dmaretskyi): Refactor.
+            assert(credentials[0].credential);
+            const spaceMemberCredential = credentials[0].credential.credential;
+            assert(getCredentialAssertion(spaceMemberCredential)['@type'] === 'dxos.halo.credentials.SpaceMember');
+
+            await writeMessages(space.inner.controlPipeline.writer, credentials);
+  */
+  requestAdmission(request: AdmissionRequest): Promise<AdmissionCredentials>;
+}
+
+
 /**
  * Handles the life-cycle of Space invitations between peers.
  */
 // TODO(dmaretskyi): Split into Host and Guest parts.
-export class SpaceInvitationsHandler extends AbstractInvitationsHandler<DataSpace> {
+// TODO(dmaretskyi): Rename.
+export class GenericInvitationsHandler{
   constructor(
     networkManager: NetworkManager,
-    private readonly _spaceManager: DataSpaceManager,
-    private readonly _signingContext: SigningContext,
-    private readonly _keyring: Keyring
   ) {
     super(networkManager);
   }
@@ -60,7 +108,7 @@ export class SpaceInvitationsHandler extends AbstractInvitationsHandler<DataSpac
   /**
    * Creates an invitation and listens for a join request from the invited (guest) peer.
    */
-  createInvitation(space: DataSpace, options?: InvitationsOptions): CancellableInvitationObservable {
+  createInvitation(handler: InvitationHandlerX, options?: InvitationsOptions): CancellableInvitationObservable {
     let swarmConnection: SwarmConnection | undefined;
     const { type, timeout = INVITATION_TIMEOUT, swarmKey } = options ?? {};
     assert(type !== Invitation.Type.OFFLINE);
@@ -237,7 +285,7 @@ export class SpaceInvitationsHandler extends AbstractInvitationsHandler<DataSpac
    * The local guest peer (invitee) then sends the local space invitation to the host,
    * which then writes the guest's credentials to the space.
    */
-  acceptInvitation(invitation: Invitation, options?: InvitationsOptions): AuthenticatingInvitationProvider {
+  acceptInvitation(handler: InvitationHandlerX, invitation: Invitation, options?: InvitationsOptions): AuthenticatingInvitationProvider {
     const { timeout = INVITATION_TIMEOUT } = options ?? {};
 
     const ctx = new Context({

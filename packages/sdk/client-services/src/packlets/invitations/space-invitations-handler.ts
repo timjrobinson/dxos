@@ -198,38 +198,19 @@ export class GenericInvitationsHandler{
           return { status };
         },
 
-        requestAdmission: async ({ identityKey, deviceKey, controlFeedKey, dataFeedKey }) => {
+        requestAdmission: async (request) => {
           try {
             // Check authenticated.
             if (isAuthenticationRequired(invitation) && !authenticationPassed) {
               throw new Error('Not authenticated');
             }
 
-            log('writing guest credentials', { host: this._signingContext.deviceKey, guest: deviceKey });
-            // TODO(burdon): Check if already admitted.
-            const credentials: FeedMessage.Payload[] = await createAdmissionCredentials(
-              this._signingContext.credentialSigner,
-              identityKey,
-              space.key,
-              space.inner.genesisFeedKey,
-              guestProfile
-            );
-
-            // TODO(dmaretskyi): Refactor.
-            assert(credentials[0].credential);
-            const spaceMemberCredential = credentials[0].credential.credential;
-            assert(getCredentialAssertion(spaceMemberCredential)['@type'] === 'dxos.halo.credentials.SpaceMember');
-
-            await writeMessages(space.inner.controlPipeline.writer, credentials);
-
+            const creds =  await handler.requestAdmission(request);
+            
             // Updating credentials complete.
             complete.wake(deviceKey);
 
-            return {
-              credential: spaceMemberCredential,
-              controlTimeframe: space.inner.controlPipeline.state.timeframe,
-              dataTimeframe: space.dataPipeline.pipelineState?.timeframe
-            };
+            return creds;
           } catch (err) {
             // TODO(burdon): Generic RPC callback to report error to client.
             observable.callback.onError(err);
@@ -362,34 +343,14 @@ export class GenericInvitationsHandler{
                   }
                 }
               }
-              // 3. Generate a pair of keys for our feeds.
-              const controlFeedKey = await this._keyring.createKey();
-              const dataFeedKey = await this._keyring.createKey();
+              
+              const request = handler.request();
 
               // 4. Send admission credentials to host (with local space keys).
               log('request admission', { guest: this._signingContext.deviceKey });
-              const { credential, controlTimeframe, dataTimeframe } =
-                await extension.rpc.SpaceHostService.requestAdmission({
-                  identityKey: this._signingContext.identityKey,
-                  deviceKey: this._signingContext.deviceKey,
-                  controlFeedKey,
-                  dataFeedKey
-                });
+              const creds = await extension.rpc.SpaceHostService.requestAdmission(request);
 
-              // 4. Create local space.
-              const assertion = getCredentialAssertion(credential);
-              assert(assertion['@type'] === 'dxos.halo.credentials.SpaceMember', 'Invalid credential');
-              assert(credential.subject.id.equals(this._signingContext.identityKey));
-
-              const space = await this._spaceManager.acceptSpace({
-                spaceKey: assertion.spaceKey,
-                genesisFeedKey: assertion.genesisFeedKey,
-                controlTimeframe,
-                dataTimeframe
-              });
-
-              // Record credential in our HALO.
-              await this._signingContext.recordCredential(credential);
+              handler.accept(creds);
 
               // 5. Success.
               log('admitted by host', { guest: this._signingContext.deviceKey, spaceKey: space.key });

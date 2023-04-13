@@ -7,6 +7,7 @@ package:
       displayName: KUBE Console
       description: KUBE Admin Console.
       build:
+        outdir: out/console
         command: pnpm -w nx bundle kube-console
 
 runtime:
@@ -18,11 +19,19 @@ runtime:
   services:
 
     signal:
-      server: wss://kube.dxos.org/.well-known/dx/signal
+      server: ws://kube-2.local/.well-known/dx/signal
     ice:
       - urls: turn:kube.dxos.org:3478
         username: dxos
         credential: dxos
+    # ipfs:
+    #   server: http://dev.kube.dxos.org:5001/api/v0
+    #   gateway: https://dev.kube.dxos.org/ipfs/gateway
+    # publisher:
+    #   server: wss://dev.kube.dxos.org/.well-known/dx/deploy
+      # server: http://kube-2.local:5001/api/v0
     ipfs:
-      server: https://dev.kube.dxos.org/ipfs/api
-      gateway: https://dev.kube.dxos.org/ipfs/gateway
+      server: /ip4/192.168.1.185/tcp/5001
+      gateway: http://kube-2.local/ipfs/gateway
+    publisher:
+      server: ws://192.168.1.185/.well-known/dx/deploy

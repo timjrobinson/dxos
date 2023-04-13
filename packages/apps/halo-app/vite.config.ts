@@ -86,16 +86,16 @@ export default defineConfig({
       }
     }),
     // https://docs.sentry.io/platforms/javascript/sourcemaps/uploading/vite
-    ...(process.env.NODE_ENV === 'production'
-      ? [
-          sentryVitePlugin({
-            org: 'dxos',
-            project: 'halo-app',
-            include: './out/halo',
-            authToken: process.env.SENTRY_RELEASE_AUTH_TOKEN
-          })
-        ]
-      : []),
+    // ...(process.env.NODE_ENV === 'production'
+    //   ? [
+    //       sentryVitePlugin({
+    //         org: 'dxos',
+    //         project: 'halo-app',
+    //         include: './out/halo',
+    //         authToken: process.env.SENTRY_RELEASE_AUTH_TOKEN
+    //       })
+    //     ]
+    //   : []),
     // https://www.bundle-buddy.com/rollup
     {
       name: 'bundle-buddy',

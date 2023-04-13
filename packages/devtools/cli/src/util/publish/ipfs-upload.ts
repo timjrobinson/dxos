@@ -21,6 +21,7 @@ export const uploadToIPFS = async (path: string, config?: Config, options?: Uplo
 
   const ipfsServer = config?.get('runtime.services.ipfs.server');
   assert(ipfsServer, 'Invalid IPFS Server.');
+  console.log({ ipfsServer })
 
   const ipfsClient = create({
     url: ipfsServer,

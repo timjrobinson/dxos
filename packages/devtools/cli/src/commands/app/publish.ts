@@ -82,6 +82,7 @@ export default class Publish extends BaseCommand {
       });
     } catch (err: any) {
       captureException(err);
+      console.error(err)
       this.log(`Unable to publish: ${err.message}`);
       this.error(err, { exit: 1 });
     }

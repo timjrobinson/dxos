@@ -164,6 +164,7 @@ export abstract class BaseCommand extends Command {
       this._clientConfig = new Config(yaml.load(configContent) as any);
     } catch (err) {
       Sentry.captureException(err);
+      console.log(err)
       console.error(`Invalid config file: ${configFile}`);
       process.exit(1);
     }

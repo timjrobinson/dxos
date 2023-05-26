@@ -3669,6 +3669,7 @@ importers:
       '@dxos/gem-core': workspace:*
       '@dxos/gem-spore': workspace:*
       '@dxos/node-std': workspace:*
+      '@dxos/react-appkit': workspace:*
       '@dxos/util': workspace:*
       '@phosphor-icons/react': ^2.0.5
       '@swc-node/register': 1.5.4
@@ -3702,6 +3703,7 @@ importers:
       '@dxos/gem-core': link:../gem-core
       '@dxos/gem-spore': link:../gem-spore
       '@dxos/node-std': link:../../common/node-std
+      '@dxos/react-appkit': link:../../ui/react-appkit
       '@dxos/util': link:../../common/util
       '@phosphor-icons/react': 2.0.5_biqbaboplfbrettd7655fr4n2y
       assert: 2.0.0

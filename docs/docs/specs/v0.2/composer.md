@@ -30,19 +30,24 @@ see also:
 
 The framework should design for these, but doesn't have to build them. We can build these in the labs workstream at a slower pace.
 
-1. Users can work with email
-2. Users can see all notifications in a universal inbox (across email and other sources)
 3. Users can make presentations
-4. Users can draw together
-5. Users can collect lists of contacts
-6. Users can manage shared todo lists
-7. Users can launch and interact with bots in their spaces
-8. Users can play chess together
-9. Users can collaborate over kanban boards
-10. Users can collaborate over post-boards of notes
-11. Users can interact with LLM based agents
-12. Users can chat and message with other users
+1. Users can search across all their content
+5. Users can collect lists of contacts (simple generic table)
 13. Users can inspect the state of ECHO spaces and objects (devtools)
+2. Users can see all notifications in a universal inbox (across email and other sources)
+6. Users can manage shared todo lists
+9. Users can collaborate over kanban boards
+12. Users can chat and message with other users (anchoring to other data)
+12. Users can video call other users
+11. Users can interact with LLM based agents
+4. Users can draw together (tldraw)
+
+### Speculative
+
+1. Users can work with email
+1. Users can work with calendar events
+10. Users can collaborate over post-boards of notes
+8. Users can play chess together
 
 ## Goals
 

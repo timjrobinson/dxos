@@ -17,6 +17,7 @@ import { KanbanBoard } from './KanbanBoard';
 export const KanbanMain: FC<{ data: [SpaceProxy, KanbanType] }> = ({ data }) => {
   const { t } = useTranslation('dxos.org/plugin/kanban');
 
+  // TODO(burdon): Not working in storybook.
   const space = data[0];
   const kanban = data[data.length - 1] as KanbanType;
 

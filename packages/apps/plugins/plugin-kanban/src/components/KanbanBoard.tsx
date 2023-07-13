@@ -108,14 +108,16 @@ export const KanbanBoard: FC<{ model: KanbanModel }> = ({ model }) => {
       arrayMove(kanban.columns, oldIndex, newIndex);
     } else if (draggingItem) {
       const { source, target } = draggingItem;
-      if (source.column.id === target!.column.id) {
-        if (target!.idx !== undefined) {
-          arrayMove(source.column.items!, source.idx!, target!.idx);
+      if (target) {
+        if (source.column.id === target.column.id) {
+          if (target.idx !== undefined) {
+            arrayMove(source.column.items!, source.idx!, target.idx);
+          }
+        } else {
+          source.column.items!.splice(source.idx!, 1);
+          // TODO(burdon): Incorrect position when moving to new column. Find current location of source.
+          target.column.items!.splice(target.idx ?? target.column.items!.length, 0, source.item!);
         }
-      } else {
-        source.column.items!.splice(source.idx!, 1);
-        // TODO(burdon): Incorrect position when moving to new column.
-        target!.column.items!.splice(target!.idx ?? target!.column.items!.length, 0, source.item!);
       }
     }
 

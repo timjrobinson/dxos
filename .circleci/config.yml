@@ -21,6 +21,7 @@ aliases:
         - pnpm-store-v1-{{ arch }}-
   - &cache_save
     save_cache:
+      when: always
       paths:
         - ~/.local/share/pnpm/store/v3
       key: pnpm-store-v1-{{ arch }}-{{ checksum "pnpm-lock.yaml" }}
@@ -33,6 +34,7 @@ aliases:
         - pnpm-store-ram-v1-{{ arch }}-
   - &ram_cache_save
     save_cache:
+      when: always
       paths:
         - /mnt/ramdisk/pnpm-store
       key: pnpm-store-ram-v1-{{ arch }}-{{ checksum "pnpm-lock.yaml" }}
@@ -72,12 +74,12 @@ jobs:
       - run: npm set verify-store-integrity false
       - run: pnpm install --prefer-offline
       - run: pnpm install-playwright
-      - *ram_cache_save
       - nx/set-shas
       - run: pnpm check-dependencies
       - run: pnpm nx affected --base=$NX_BASE --head=$NX_HEAD --target=lint
       - run: pnpm nx affected --base=$NX_BASE --head=$NX_HEAD --target=build
       - run: pnpm nx affected --base=$NX_BASE --head=$NX_HEAD --target=test --coverage --xmlReport
+      - *ram_cache_save
       - when:
           condition:
             equal: [ main, <<pipeline.git.branch>> ]
@@ -96,27 +98,21 @@ jobs:
       - *docker_image
     # TODO(wittjosiah): Using because of kai bundling memory usage.
     resource_class: xlarge
+    environment:
+      REMOTE_SOURCE: http://localhost:3967/vault.html
+      # TODO(wittjosiah): Remove. Currently needed for building Vite apps.
+      NODE_OPTIONS: --max_old_space_size=10240
     steps:
       - checkout
       - *cache_restore
       - run: pnpm install
       - run: pnpm install-playwright
-      - *cache_save
       - nx/set-shas
       - run: pnpm nx affected --base=$NX_BASE --head=$NX_HEAD --target=chromatic
       # TODO(wittjosiah): Apps can't be bundled in parallel currently due to memory usage.
-      - run:
-          command: pnpm nx affected --base=$NX_BASE --head=$NX_HEAD --target=bundle --parallel=1
-          environment:
-            REMOTE_SOURCE: http://localhost:3967/vault.html
-            # TODO(wittjosiah): Remove. Currently needed for building Vite apps.
-            NODE_OPTIONS: --max_old_space_size=10240
-      - run:
-          command: pnpm nx affected --base=$NX_BASE --head=$NX_HEAD --target=e2e --parallel=1 --xmlReport
-          environment:
-            REMOTE_SOURCE: http://localhost:3967/vault.html
-            # TODO(wittjosiah): Remove. Currently need because e2e seems to be re-running bundling.
-            NODE_OPTIONS: --max_old_space_size=10240
+      - run: pnpm nx affected --base=$NX_BASE --head=$NX_HEAD --target=bundle --parallel=1
+      - run: pnpm nx affected --base=$NX_BASE --head=$NX_HEAD --target=e2e --parallel=1 --xmlReport
+      - *cache_save
       - *codecov_upload
       - *store_test_results
       - store_artifacts:
@@ -134,9 +130,9 @@ jobs:
       - *cache_restore
       - run: pnpm install
       - run: pnpm install-playwright
-      - *cache_save
       - nx/set-shas
       - run: pnpm nx affected --base=$NX_BASE --head=$NX_HEAD --target=test --tags=flaky --coverage --xmlReport
+      - *cache_save
       - *codecov_upload
       - *store_test_results
 
@@ -152,7 +148,6 @@ jobs:
       - checkout
       - *cache_restore
       - run: pnpm install
-      - *cache_save
       - run: pnpm nx build cli
       - run:
           command: ./.circleci/scripts/publish.sh
@@ -163,6 +158,7 @@ jobs:
           command: ./.circleci/scripts/publish-extension.sh
           environment:
             NODE_ENV: production
+      - *cache_save
 
 workflows:
   default:

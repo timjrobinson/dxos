@@ -54,7 +54,6 @@
         "forceExit": true,
         "outputPath": "tmp/mocha/packages/core/mesh/network-manager",
         "resultsPath": "test-results/packages/core/mesh/network-manager",
-        "setup": "packages/core/mesh/signal/testing/setup.js",
         "setupOptions": {
           "port": 12005
         },

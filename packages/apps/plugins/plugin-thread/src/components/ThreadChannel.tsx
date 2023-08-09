@@ -8,25 +8,11 @@ import { Thread as ThreadType } from '@braneframe/types';
 import { Input, useTranslation } from '@dxos/aurora';
 import { baseSurface, mx } from '@dxos/aurora-theme';
 import { PublicKey } from '@dxos/client';
-import { humanize } from '@dxos/util';
 
 import { THREAD_PLUGIN } from '../types';
 import { ThreadBlock } from './ThreadBlock';
 import { ThreadInput } from './ThreadInput';
-
-// TODO(burdon): Resolve username (and avatar) from identityKey/members.
-const colors = [
-  'text-blue-300',
-  'text-green-300',
-  'text-teal-300',
-  'text-red-300',
-  'text-orange-300',
-  'text-purple-300',
-];
-const getBlockProperties = (identityKey: PublicKey) => ({
-  displayName: humanize(identityKey),
-  classes: [colors[Number('0x' + identityKey) % colors.length]].join(' '),
-});
+import { BlockPropertyGetter } from './ThreadMain';
 
 // type DailyBlock = {
 //   date?: Date;
@@ -49,8 +35,9 @@ const getBlockProperties = (identityKey: PublicKey) => ({
 export const ThreadChannel: FC<{
   identityKey: PublicKey;
   thread: ThreadType;
+  getBlockProperties: BlockPropertyGetter;
   onAddMessage: (text: string) => boolean | undefined;
-}> = ({ identityKey, thread, onAddMessage }) => {
+}> = ({ identityKey, thread, getBlockProperties, onAddMessage }) => {
   const { t } = useTranslation(THREAD_PLUGIN);
   const bottomRef = useRef<HTMLDivElement>(null);
 

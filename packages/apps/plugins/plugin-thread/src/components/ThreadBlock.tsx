@@ -10,19 +10,17 @@ import { Thread as ThreadType } from '@braneframe/types';
 import { getSize, groupSurface, mx } from '@dxos/aurora-theme';
 import { PublicKey } from '@dxos/react-client';
 
+import { BlockPropertyGetter } from './ThreadMain';
 import { useSubscription } from './util';
 
-export type BlockProperties = {
-  displayName: string;
-  classes: string;
-};
-
-export const ThreadBlock: FC<{
+export type ThreadBlockProps = {
   identityKey: PublicKey;
   block: ThreadType.Block;
-  getBlockProperties: (identityKey: PublicKey) => BlockProperties;
+  getBlockProperties: BlockPropertyGetter;
   onDeleteMessage?: (blockId: string, idx: number) => void;
-}> = ({ identityKey, block, getBlockProperties, onDeleteMessage }) => {
+};
+
+export const ThreadBlock: FC<ThreadBlockProps> = ({ identityKey, block, getBlockProperties, onDeleteMessage }) => {
   useSubscription(block.messages); // TODO(burdon): Not updated.
   if (!block.messages.length || !block.identityKey) {
     return null;

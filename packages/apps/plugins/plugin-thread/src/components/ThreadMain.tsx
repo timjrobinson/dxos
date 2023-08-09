@@ -9,8 +9,9 @@ import { Thread as ThreadType } from '@braneframe/types';
 import { Main } from '@dxos/aurora';
 import { baseSurface, fullSurface } from '@dxos/aurora-theme';
 import { PublicKey } from '@dxos/react-client';
-import { SpaceProxy } from '@dxos/react-client/echo';
+import { Space, useMembers } from '@dxos/react-client/echo';
 import { useIdentity } from '@dxos/react-client/halo';
+import { humanize } from '@dxos/util';
 
 import { ThreadChannel } from './ThreadChannel';
 
@@ -20,10 +21,31 @@ import { ThreadChannel } from './ThreadChannel';
 // - Lightweight threads for document comments, inline AI, etc.
 //    (Similar reusable components everywhere; same data structure).
 
-export const ThreadMain: FC<{ data: { space: SpaceProxy; object: ThreadType } }> = ({ data: { object: thread } }) => {
+// TODO(burdon): Resolve username (and avatar) from identityKey/members.
+const colors = [
+  'text-blue-300',
+  'text-green-300',
+  'text-teal-300',
+  'text-red-300',
+  'text-orange-300',
+  'text-purple-300',
+];
+
+export type BlockPropertyGetter = (identityKey: PublicKey) => { displayName: string; classes: string };
+
+export const ThreadMain: FC<{ data: { space: Space; object: ThreadType } }> = ({ data: { space, object: thread } }) => {
   const identity = useIdentity(); // TODO(burdon): Requires context for storybook?
   const identityKey = identity!.identityKey;
   // const identityKey = PublicKey.random().toHex();
+
+  const members = useMembers(space.key);
+  const getBlockProperties: BlockPropertyGetter = (identityKey: PublicKey) => {
+    const member = members.find((member) => PublicKey.equals(member.identity.identityKey, identityKey));
+    return {
+      displayName: member?.identity.profile?.displayName ?? humanize(identityKey),
+      classes: [colors[Number('0x' + identityKey) % colors.length]].join(' '),
+    };
+  };
 
   // TODO(burdon): Change to model.
   const handleAddMessage = (text: string) => {
@@ -59,7 +81,12 @@ export const ThreadMain: FC<{ data: { space: SpaceProxy; object: ThreadType } }>
 
   return (
     <Main.Content classNames={[fullSurface, baseSurface]}>
-      <ThreadChannel identityKey={identityKey} thread={thread} onAddMessage={handleAddMessage} />
+      <ThreadChannel
+        identityKey={identityKey}
+        thread={thread}
+        getBlockProperties={getBlockProperties}
+        onAddMessage={handleAddMessage}
+      />
     </Main.Content>
   );
 };

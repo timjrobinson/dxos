@@ -50,7 +50,8 @@ export const ThreadChannel: FC<{
   identityKey: PublicKey;
   thread: ThreadType;
   onAddMessage: (text: string) => boolean | undefined;
-}> = ({ identityKey, thread, onAddMessage }) => {
+  onAddDocument: (text: string) => boolean | undefined;
+}> = ({ identityKey, thread, onAddMessage, onAddDocument }) => {
   const { t } = useTranslation(THREAD_PLUGIN);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -89,7 +90,12 @@ export const ThreadChannel: FC<{
           {thread.blocks
             .map((block) => (
               <div key={block.id} className='my-1 __divide-y __border-b'>
-                <ThreadBlock identityKey={identityKey} block={block} getBlockProperties={getBlockProperties} />
+                <ThreadBlock
+                  identityKey={identityKey}
+                  block={block}
+                  getBlockProperties={getBlockProperties}
+                  onAddDocument={onAddDocument}
+                />
               </div>
             ))
             .reverse()}

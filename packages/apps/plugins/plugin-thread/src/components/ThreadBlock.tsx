@@ -22,7 +22,8 @@ export const ThreadBlock: FC<{
   block: ThreadType.Block;
   getBlockProperties: (identityKey: PublicKey) => BlockProperties;
   onDeleteMessage?: (blockId: string, idx: number) => void;
-}> = ({ identityKey, block, getBlockProperties, onDeleteMessage }) => {
+  onAddDocument: (text: string) => void;
+}> = ({ identityKey, block, getBlockProperties, onDeleteMessage, onAddDocument }) => {
   useSubscription(block.messages); // TODO(burdon): Not updated.
   if (!block.messages.length || !block.identityKey) {
     return null;
@@ -72,6 +73,14 @@ export const ThreadBlock: FC<{
                     <X />
                   </button>
                 )}
+                <button
+                  className='float-right'
+                  onClick={() => {
+                    onAddDocument(message.text!);
+                  }}
+                >
+                  Make into Doc
+                </button>
               </div>
             ))}
           </div>

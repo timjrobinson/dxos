@@ -157,8 +157,6 @@ export class Peer {
     this.initiating = true;
 
     try {
-      await this._connectionLimiter.connecting(sessionId);
-
       const answer = await this._signalMessaging.offer({
         author: this.localPeerId,
         recipient: this.id,
@@ -176,6 +174,7 @@ export class Peer {
         this._callbacks.onRejected();
         return;
       }
+      await this._connectionLimiter.connecting(sessionId);
       await connection.openConnection();
       this._callbacks.onAccepted();
     } catch (err: any) {

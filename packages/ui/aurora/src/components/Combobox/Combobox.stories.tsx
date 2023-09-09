@@ -7,9 +7,32 @@ import React, { useEffect, useState } from 'react';
 
 import '@dxosTheme';
 
-import { ComboBox } from './ComboBox';
+import { Combobox, ComboboxInputProps, ComboboxRootProps } from './Combobox';
 
 type Item = { id: string; text: string };
+
+type StorybookComboboxProps = ComboboxRootProps & Pick<ComboboxInputProps, 'placeholder' | 'onChange'>;
+
+const StorybookCombobox = ({ placeholder, onChange, ...rootProps }: StorybookComboboxProps) => {
+  return (
+    <Combobox.Root {...rootProps}>
+      <Combobox.Label>Label</Combobox.Label>
+      <Combobox.Anchor>
+        <Combobox.Input {...{ placeholder }} />
+        <Combobox.Trigger />
+      </Combobox.Anchor>
+      <Combobox.Content>
+        {rootProps.items.map((item, index) => {
+          return (
+            <Combobox.Item key={item.id} item={item} index={index}>
+              {item.text}
+            </Combobox.Item>
+          );
+        })}
+      </Combobox.Content>
+    </Combobox.Root>
+  );
+};
 
 const items: Item[] = faker.helpers
   .uniqueArray(faker.definitions.animal.fish, 100)
@@ -20,7 +43,7 @@ const items: Item[] = faker.helpers
   }));
 
 export default {
-  component: ComboBox.Root,
+  component: StorybookCombobox,
   args: {
     adapter: (item: Item) => ({ id: item.id, text: item.text }),
   },
@@ -52,8 +75,9 @@ export const Empty = {
 
 export const TypeAhead = () => {
   const [text, setText] = useState<string>();
-  const [selected, setSelected] = useState<Item>();
-  const [matching, setMatching] = useState<Item[]>();
+  const [selected, setSelected] = useState<Item | null>(null);
+  const [matching, setMatching] = useState<Item[]>([]);
+
   useEffect(() => {
     console.log({ text });
     setMatching(
@@ -63,13 +87,12 @@ export const TypeAhead = () => {
 
   return (
     <div className='flex flex-col w-full bg-neutral-100 dark:bg-neutral-800'>
-      <ComboBox.Root<Item>
+      <StorybookCombobox
         placeholder={'Select...'}
         items={matching}
-        value={selected}
-        adapter={(item) => ({ id: item.id, text: item.text })}
-        onChange={setSelected}
-        onInputChange={(text) => setText(text?.toLowerCase())}
+        selectedItem={selected}
+        onSelectedItemChange={({ selectedItem }) => setSelected(selectedItem)}
+        onChange={({ target: { value } }) => setText(value?.toLowerCase())}
       />
 
       <div className='mt-16 p-2 font-mono text-xs truncate'>{selected?.id ?? 'NULL'}</div>

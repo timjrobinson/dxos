@@ -27,6 +27,9 @@
       "path": "../aurora-types"
     },
     {
+      "path": "../primitives/react-combobox"
+    },
+    {
       "path": "../primitives/react-hooks"
     },
     {

@@ -86,7 +86,10 @@ Root.displayName = COMBOBOX_NAME;
 
 type AnchorProps = MenuAnchorProps;
 
-const Anchor = MenuPrimitive.Anchor;
+const Anchor = ({ __scopeCombobox, ...props }: ScopedProps<AnchorProps>) => {
+  const menuScope = useMenuScope(__scopeCombobox);
+  return <MenuPrimitive.Anchor {...menuScope} {...props} />;
+};
 
 // Input
 
@@ -141,8 +144,9 @@ type ContentProps = MenuContentProps;
 
 const Content = forwardRef<HTMLDivElement, ScopedProps<ContentProps>>(({ __scopeCombobox, ...props }, forwardedRef) => {
   const { getMenuProps } = useComboboxContext(COMBOBOX_CONTENT_NAME, __scopeCombobox);
+  const menuScope = useMenuScope(__scopeCombobox);
 
-  return <MenuPrimitive.Content {...props} {...getMenuProps({ ...props, ref: forwardedRef })} />;
+  return <MenuPrimitive.Content {...menuScope} {...props} {...getMenuProps({ ...props, ref: forwardedRef })} />;
 });
 
 Content.displayName = COMBOBOX_CONTENT_NAME;
@@ -155,12 +159,13 @@ type ItemProps<I = any> = MenuItemProps & GetItemPropsOptions<I>;
 
 const Item = forwardRef<HTMLDivElement, ScopedProps<ItemProps>>(({ __scopeCombobox, ...props }, forwardedRef) => {
   const { getItemProps } = useComboboxContext(COMBOBOX_ITEM_NAME, __scopeCombobox);
+  const menuScope = useMenuScope(__scopeCombobox);
 
-  return <MenuPrimitive.Item {...props} {...getItemProps({ ...props, ref: forwardedRef })} />;
+  return <MenuPrimitive.Item {...menuScope} {...props} {...getItemProps({ ...props, ref: forwardedRef })} />;
 });
 
 // Exports
 
-export { Root, Anchor, Input, Label, Content, Item, useComboboxContext };
+export { Root, Anchor, Trigger, Input, Label, Content, Item, useComboboxContext };
 
-export type { RootProps, AnchorProps, InputProps, LabelProps, ContentProps, ItemProps };
+export type { RootProps, AnchorProps, TriggerProps, InputProps, LabelProps, ContentProps, ItemProps };

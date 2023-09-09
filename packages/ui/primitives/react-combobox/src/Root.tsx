@@ -11,7 +11,14 @@ import { useControllableState } from '@radix-ui/react-use-controllable-state';
 import { GetItemPropsOptions, useCombobox, UseComboboxProps, UseComboboxReturnValue } from 'downshift';
 import React, { ComponentPropsWithRef, forwardRef, useCallback } from 'react';
 
-import { InputRoot, InputRootProps, TextInput, TextInputProps, Label, LabelProps } from '@dxos/react-input';
+import {
+  InputRoot,
+  InputRootProps,
+  TextInput,
+  TextInputProps,
+  Label as InputLabel,
+  LabelProps as InputLabelProps,
+} from '@dxos/react-input';
 
 // Root
 
@@ -25,7 +32,7 @@ const useMenuScope = createMenuScope();
 const [createComboboxContext] = createContextScope(COMBOBOX_NAME, [createMenuScope]);
 const [ComboboxProvider, useComboboxContext] = createComboboxContext<ComboboxContextValue>(COMBOBOX_NAME);
 
-type ComboboxRootProps<I> = Omit<UseComboboxProps<I>, 'isOpen' | 'defaultIsOpen' | 'initialIsOpen' | 'onIsOpenChange'> &
+type RootProps<I> = Omit<UseComboboxProps<I>, 'isOpen' | 'defaultIsOpen' | 'initialIsOpen' | 'onIsOpenChange'> &
   MenuProps &
   Pick<InputRootProps, 'id'> & {
     open?: boolean;
@@ -33,7 +40,7 @@ type ComboboxRootProps<I> = Omit<UseComboboxProps<I>, 'isOpen' | 'defaultIsOpen'
     onOpenChange?(open: boolean): void;
   };
 
-const ComboboxRoot = <I = any,>({
+const Root = <I = any,>({
   __scopeCombobox,
   id,
   children,
@@ -43,7 +50,7 @@ const ComboboxRoot = <I = any,>({
   dir,
   modal,
   ...hookProps
-}: ScopedProps<ComboboxRootProps<I>>) => {
+}: ScopedProps<RootProps<I>>) => {
   const menuScope = useMenuScope(__scopeCombobox);
   const [isOpen, setIsOpen] = useControllableState({
     prop: open,
@@ -73,53 +80,49 @@ const ComboboxRoot = <I = any,>({
   );
 };
 
-ComboboxRoot.displayName = COMBOBOX_NAME;
+Root.displayName = COMBOBOX_NAME;
 
 // Anchor
 
-type ComboboxAnchorProps = MenuAnchorProps;
+type AnchorProps = MenuAnchorProps;
 
-const ComboboxAnchor = MenuPrimitive.Anchor;
+const Anchor = MenuPrimitive.Anchor;
 
 // Input
 
 const COMBOBOX_INPUT_NAME = 'Combobox__Input';
 
-type ComboboxInputProps = TextInputProps;
+type InputProps = TextInputProps;
 
-const ComboboxInput = forwardRef<HTMLInputElement, ScopedProps<ComboboxInputProps>>(
-  ({ __scopeCombobox, ...props }, forwardedRef) => {
-    const { getInputProps } = useComboboxContext(COMBOBOX_INPUT_NAME, __scopeCombobox);
+const Input = forwardRef<HTMLInputElement, ScopedProps<InputProps>>(({ __scopeCombobox, ...props }, forwardedRef) => {
+  const { getInputProps } = useComboboxContext(COMBOBOX_INPUT_NAME, __scopeCombobox);
 
-    return <TextInput {...props} {...getInputProps({ ref: forwardedRef, ...props })} />;
-  },
-);
+  return <TextInput {...props} {...getInputProps({ ref: forwardedRef, ...props })} />;
+});
 
-ComboboxInput.displayName = COMBOBOX_INPUT_NAME;
+Input.displayName = COMBOBOX_INPUT_NAME;
 
 // Label
 
 const COMBOBOX_LABEL_NAME = 'Combobox__Label';
 
-type ComboboxLabelProps = LabelProps;
+type LabelProps = InputLabelProps;
 
-const ComboboxLabel = forwardRef<HTMLLabelElement, ScopedProps<ComboboxLabelProps>>(
-  ({ __scopeCombobox, ...props }, forwardedRef) => {
-    const { getLabelProps } = useComboboxContext(COMBOBOX_LABEL_NAME, __scopeCombobox);
+const Label = forwardRef<HTMLLabelElement, ScopedProps<LabelProps>>(({ __scopeCombobox, ...props }, forwardedRef) => {
+  const { getLabelProps } = useComboboxContext(COMBOBOX_LABEL_NAME, __scopeCombobox);
 
-    return <Label {...props} {...getLabelProps({ ref: forwardedRef, ...props })} />;
-  },
-);
+  return <InputLabel {...props} {...getLabelProps({ ref: forwardedRef, ...props })} />;
+});
 
-ComboboxLabel.displayName = COMBOBOX_LABEL_NAME;
+Label.displayName = COMBOBOX_LABEL_NAME;
 
 // Trigger
 
 const COMBOBOX_TRIGGER_NAME = 'Combobox__OpenTrigger';
 
-type ComboboxTriggerProps = ComponentPropsWithRef<typeof Primitive.button> & { asChild?: boolean };
+type TriggerProps = ComponentPropsWithRef<typeof Primitive.button> & { asChild?: boolean };
 
-const ComboboxTrigger = forwardRef<HTMLButtonElement, ScopedProps<ComboboxTriggerProps>>(
+const Trigger = forwardRef<HTMLButtonElement, ScopedProps<TriggerProps>>(
   ({ __scopeCombobox, asChild, ...props }, forwardedRef) => {
     const { getToggleButtonProps } = useComboboxContext(COMBOBOX_TRIGGER_NAME, __scopeCombobox);
 
@@ -128,55 +131,36 @@ const ComboboxTrigger = forwardRef<HTMLButtonElement, ScopedProps<ComboboxTrigge
   },
 );
 
-ComboboxTrigger.displayName = COMBOBOX_TRIGGER_NAME;
+Trigger.displayName = COMBOBOX_TRIGGER_NAME;
 
 // Content of the menu
 
 const COMBOBOX_CONTENT_NAME = 'Combobox_Content';
 
-type ComboboxContentProps = MenuContentProps;
+type ContentProps = MenuContentProps;
 
-const ComboboxContent = forwardRef<HTMLDivElement, ScopedProps<ComboboxContentProps>>(
-  ({ __scopeCombobox, ...props }, forwardedRef) => {
-    const { getMenuProps } = useComboboxContext(COMBOBOX_CONTENT_NAME, __scopeCombobox);
+const Content = forwardRef<HTMLDivElement, ScopedProps<ContentProps>>(({ __scopeCombobox, ...props }, forwardedRef) => {
+  const { getMenuProps } = useComboboxContext(COMBOBOX_CONTENT_NAME, __scopeCombobox);
 
-    return <MenuPrimitive.Content {...props} {...getMenuProps({ ...props, ref: forwardedRef })} />;
-  },
-);
+  return <MenuPrimitive.Content {...props} {...getMenuProps({ ...props, ref: forwardedRef })} />;
+});
 
-ComboboxContent.displayName = COMBOBOX_CONTENT_NAME;
+Content.displayName = COMBOBOX_CONTENT_NAME;
 
 // Items in the menu
 
 const COMBOBOX_ITEM_NAME = 'Combobox_Item';
 
-type ComboboxItemProps<I = any> = MenuItemProps & GetItemPropsOptions<I>;
+type ItemProps<I = any> = MenuItemProps & GetItemPropsOptions<I>;
 
-const ComboboxItem = forwardRef<HTMLDivElement, ScopedProps<ComboboxItemProps>>(
-  ({ __scopeCombobox, ...props }, forwardedRef) => {
-    const { getItemProps } = useComboboxContext(COMBOBOX_ITEM_NAME, __scopeCombobox);
+const Item = forwardRef<HTMLDivElement, ScopedProps<ItemProps>>(({ __scopeCombobox, ...props }, forwardedRef) => {
+  const { getItemProps } = useComboboxContext(COMBOBOX_ITEM_NAME, __scopeCombobox);
 
-    return <MenuPrimitive.Item {...props} {...getItemProps({ ...props, ref: forwardedRef })} />;
-  },
-);
+  return <MenuPrimitive.Item {...props} {...getItemProps({ ...props, ref: forwardedRef })} />;
+});
 
 // Exports
 
-export {
-  ComboboxRoot,
-  ComboboxAnchor,
-  ComboboxInput,
-  ComboboxLabel,
-  ComboboxContent,
-  ComboboxItem,
-  useComboboxContext,
-};
+export { Root, Anchor, Input, Label, Content, Item, useComboboxContext };
 
-export type {
-  ComboboxRootProps,
-  ComboboxAnchorProps,
-  ComboboxInputProps,
-  ComboboxLabelProps,
-  ComboboxContentProps,
-  ComboboxItemProps,
-};
+export type { RootProps, AnchorProps, InputProps, LabelProps, ContentProps, ItemProps };

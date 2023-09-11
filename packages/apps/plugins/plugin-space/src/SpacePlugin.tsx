@@ -398,8 +398,7 @@ export const SpacePlugin = (): PluginDefinition<SpacePluginProvides> => {
 
             case SpaceAction.ADD_OBJECT: {
               if (space && intent.data.object) {
-                const object = space.db.add(intent.data.object);
-                return object;
+                return space.db.add(intent.data.object);
               }
               break;
             }

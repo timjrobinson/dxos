@@ -70,7 +70,8 @@ export const runPlan = async <S, C>(name: string, { plan, spec, options }: RunPl
 
 const runPlanner = async <S, C>(name: string, { plan, spec, options }: RunPlanParams<S, C>) => {
   const testId = createTestPathname();
-  const outDir = `${process.cwd()}/out/results/${testId}`;
+  const outDirBase = process.env.GRAVITY_OUT_BASE || process.cwd();
+  const outDir = `${outDirBase}/out/results/${testId}`;
   fs.mkdirSync(outDir, { recursive: true });
   log.info('starting plan', {
     outDir,

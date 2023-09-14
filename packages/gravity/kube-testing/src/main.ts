@@ -2,6 +2,9 @@
 // Copyright 2023 DXOS.org
 //
 
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+
 import { PublicKey } from '@dxos/keys';
 import { TransportKind } from '@dxos/network-manager';
 
@@ -122,21 +125,21 @@ const plans: { [key: string]: () => RunPlanParams<any, any> } = {
  * Example: KUBE_HOME=~/Code/dxos/kube p run-tests echo
  */
 const start = async () => {
-  const [, , name] = process.argv;
-  const spec = name ?? process.env.GRAVITY_SPEC; // Env set when forked by test runner.
+  const argv = yargs(hideBin(process.argv)).usage('Usage: $0 <test> [--repeatanalysis FILE]').argv;
+
+  const name = argv._;
+  const spec = name.length > 0 ? name : process.env.GRAVITY_SPEC; // Env set when forked by test runner.
   const planGenerator = plans[spec];
   if (planGenerator) {
     const plan: RunPlanParams<any, any> = planGenerator();
 
-    // TODO(burdon): Option.
-    const repeatAnalysis = undefined;
-    if (repeatAnalysis) {
-      plan.options.repeatAnalysis = repeatAnalysis;
+    if (argv.repeatanalysis) {
+      plan.options.repeatAnalysis = argv.repeatanalysis;
     }
 
     await runPlan(name, plan);
   } else {
-    console.warn(`\nRun with test: [${Object.keys(plans).join(', ')}]`);
+    console.warn(`\nunknkown test: ${spec}`);
   }
 };
 

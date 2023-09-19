@@ -13,7 +13,7 @@
     "clean:api": "rm -rf docs/api",
     "prerelease": "pnpm typedoc && pnpm clean:api && pnpm apidoc",
     "serve": "VITE_EXAMPLE_BASE_URL=http://localhost:9009 vuepress dev docs",
-    "typedoc": "typedoc"
+    "typedoc": "typedoc --options ./typedoc-client.json && typedoc --options ./typedoc-config.json && typedoc --options ./typedoc-react-client.json && typedoc --options ./typedoc-merge.json"
   },
   "devDependencies": {
     "@dxos/apidoc": "workspace:*",

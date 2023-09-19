@@ -1,0 +1,10 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "json": "docs/api.json",
+  "entryPointStrategy": "merge",
+  "entryPoints": [
+    "docs/api-client.json",
+    "docs/api-config.json",
+    // "docs/api-react-client.json"
+  ]
+}

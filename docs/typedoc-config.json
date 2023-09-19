@@ -1,0 +1,13 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "tsconfig": "../packages/sdk/config/tsconfig.json",
+  "json": "docs/api-config.json",
+  "gitRevision": "main",
+  "githubPages": false,
+  "excludePrivate": true,
+  "basePath": "..",
+  "entryPointStrategy": "resolve",
+  "entryPoints": [
+    "../packages/sdk/config/src/index.ts"
+  ]
+}

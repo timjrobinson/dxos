@@ -1,0 +1,20 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "tsconfig": "../packages/sdk/client/tsconfig.json",
+  "json": "docs/api-client.json",
+  "gitRevision": "main",
+  "githubPages": false,
+  "excludePrivate": true,
+  "basePath": "..",
+  "entryPointStrategy": "resolve",
+  "entryPoints": [
+    "../packages/sdk/client/src/index.ts",
+    "../packages/sdk/client/src/devtools/index.ts",
+    "../packages/sdk/client/src/echo/index.ts",
+    "../packages/sdk/client/src/halo/index.ts",
+    "../packages/sdk/client/src/invitations/index.ts",
+    "../packages/sdk/client/src/mesh/index.ts",
+    "../packages/sdk/client/src/services/index.ts",
+    // "../packages/sdk/client/src/testing/index.ts"
+  ]
+}

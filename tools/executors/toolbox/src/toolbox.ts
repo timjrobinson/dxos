@@ -265,7 +265,7 @@ class Toolbox {
         });
 
         tsConfigJson.compilerOptions ??= {};
-        tsConfigJson.compilerOptions.paths = await this._getTsconfigPaths(project, deps.map(([name]) => name));
+        delete tsConfigJson.compilerOptions.paths;
 
         const updated = sortJson(tsConfigJson, {
           depth: 3,
@@ -285,14 +285,14 @@ class Toolbox {
     }
   }
   
-  async _getTsconfigPaths(project: Project, deps: string[]): Promise<Record<string, string[]> | undefined> {
+  async _getTsconfigPaths(deps: string[]): Promise<Record<string, string[]> | undefined> {
     const res: Record<string, string[]>  = {};
     await Promise.all(deps.map(async (dep) => {
       const dependency = this._getProjectByPackageName(dep)!;
       const entrypoints = await this._isValidPackageToMap(dependency);
       if (entrypoints) {
-        res[dependency.name] = [relative(project.path, join(dependency.path, 'src/index.ts'))];
-        res[`${dependency.name}/*`] = [relative(project.path, join(dependency.path, 'src/*'))];
+        res[dependency.name] = [relative(this.rootDir, join(dependency.path, 'src/index.ts'))];
+        res[`${dependency.name}/*`] = [relative(this.rootDir, join(dependency.path, 'src/*'))];
       }
     }));
 

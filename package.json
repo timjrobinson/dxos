@@ -30,7 +30,8 @@
   "dependencies": {
     "@dxos/conform": "workspace:*",
     "execa": "^5.1.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "vite-tsconfig-paths": "^4.2.1"
   },
   "devDependencies": {
     "@dxos/async": "workspace:*",

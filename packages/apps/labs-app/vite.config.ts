@@ -8,6 +8,7 @@ import { resolve } from 'node:path';
 import { defineConfig, searchForWorkspaceRoot } from 'vite';
 // import mkcert from 'vite-plugin-mkcert';
 import { VitePWA } from 'vite-plugin-pwa';
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 import { ThemePlugin } from '@dxos/aurora-theme/plugin';
 import { ConfigPlugin } from '@dxos/config/vite-plugin';
@@ -72,6 +73,10 @@ export default defineConfig({
         resolve(__dirname, './node_modules/@dxos/aurora-table/dist/lib/**/*.mjs'),
       ],
       extensions: [osThemeExtension],
+    }),
+    tsconfigPaths({
+      root: process.cwd(),
+      projects: ['tsconfig.paths.json']
     }),
     // https://github.com/preactjs/signals/issues/269
     ReactPlugin({ jsxRuntime: 'classic' }),

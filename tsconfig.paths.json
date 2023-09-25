@@ -1,0 +1,198 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@braneframe/plugin-chess": [
+        "packages/apps/plugins/plugin-chess/src/index.ts"
+      ],
+      "@braneframe/plugin-chess/*": [
+        "packages/apps/plugins/plugin-chess/src/*"
+      ],
+      "@braneframe/plugin-client": [
+        "packages/apps/plugins/plugin-client/src/index.ts"
+      ],
+      "@braneframe/plugin-client/*": [
+        "packages/apps/plugins/plugin-client/src/*"
+      ],
+      "@braneframe/plugin-debug": [
+        "packages/apps/plugins/plugin-debug/src/index.ts"
+      ],
+      "@braneframe/plugin-debug/*": [
+        "packages/apps/plugins/plugin-debug/src/*"
+      ],
+      "@braneframe/plugin-dnd": [
+        "packages/apps/plugins/plugin-dnd/src/index.ts"
+      ],
+      "@braneframe/plugin-dnd/*": [
+        "packages/apps/plugins/plugin-dnd/src/*"
+      ],
+      "@braneframe/plugin-error": [
+        "packages/apps/plugins/plugin-error/src/index.ts"
+      ],
+      "@braneframe/plugin-error/*": [
+        "packages/apps/plugins/plugin-error/src/*"
+      ],
+      "@braneframe/plugin-files": [
+        "packages/apps/plugins/plugin-files/src/index.ts"
+      ],
+      "@braneframe/plugin-files/*": [
+        "packages/apps/plugins/plugin-files/src/*"
+      ],
+      "@braneframe/plugin-github": [
+        "packages/apps/plugins/plugin-github/src/index.ts"
+      ],
+      "@braneframe/plugin-github/*": [
+        "packages/apps/plugins/plugin-github/src/*"
+      ],
+      "@braneframe/plugin-graph": [
+        "packages/apps/plugins/plugin-graph/src/index.ts"
+      ],
+      "@braneframe/plugin-graph/*": [
+        "packages/apps/plugins/plugin-graph/src/*"
+      ],
+      "@braneframe/plugin-intent": [
+        "packages/apps/plugins/plugin-intent/src/index.ts"
+      ],
+      "@braneframe/plugin-intent/*": [
+        "packages/apps/plugins/plugin-intent/src/*"
+      ],
+      "@braneframe/plugin-ipfs": [
+        "packages/apps/plugins/plugin-ipfs/src/index.ts"
+      ],
+      "@braneframe/plugin-ipfs/*": [
+        "packages/apps/plugins/plugin-ipfs/src/*"
+      ],
+      "@braneframe/plugin-kanban": [
+        "packages/apps/plugins/plugin-kanban/src/index.ts"
+      ],
+      "@braneframe/plugin-kanban/*": [
+        "packages/apps/plugins/plugin-kanban/src/*"
+      ],
+      "@braneframe/plugin-map": [
+        "packages/apps/plugins/plugin-map/src/index.ts"
+      ],
+      "@braneframe/plugin-map/*": [
+        "packages/apps/plugins/plugin-map/src/*"
+      ],
+      "@braneframe/plugin-markdown": [
+        "packages/apps/plugins/plugin-markdown/src/index.ts"
+      ],
+      "@braneframe/plugin-markdown/*": [
+        "packages/apps/plugins/plugin-markdown/src/*"
+      ],
+      "@braneframe/plugin-pwa": [
+        "packages/apps/plugins/plugin-pwa/src/index.ts"
+      ],
+      "@braneframe/plugin-pwa/*": [
+        "packages/apps/plugins/plugin-pwa/src/*"
+      ],
+      "@braneframe/plugin-sketch": [
+        "packages/apps/plugins/plugin-sketch/src/index.ts"
+      ],
+      "@braneframe/plugin-sketch/*": [
+        "packages/apps/plugins/plugin-sketch/src/*"
+      ],
+      "@braneframe/plugin-space": [
+        "packages/apps/plugins/plugin-space/src/index.ts"
+      ],
+      "@braneframe/plugin-space/*": [
+        "packages/apps/plugins/plugin-space/src/*"
+      ],
+      "@braneframe/plugin-splitview": [
+        "packages/apps/plugins/plugin-splitview/src/index.ts"
+      ],
+      "@braneframe/plugin-splitview/*": [
+        "packages/apps/plugins/plugin-splitview/src/*"
+      ],
+      "@braneframe/plugin-stack": [
+        "packages/apps/plugins/plugin-stack/src/index.ts"
+      ],
+      "@braneframe/plugin-stack/*": [
+        "packages/apps/plugins/plugin-stack/src/*"
+      ],
+      "@braneframe/plugin-table": [
+        "packages/apps/plugins/plugin-table/src/index.ts"
+      ],
+      "@braneframe/plugin-table/*": [
+        "packages/apps/plugins/plugin-table/src/*"
+      ],
+      "@braneframe/plugin-telemetry": [
+        "packages/apps/plugins/plugin-telemetry/src/index.ts"
+      ],
+      "@braneframe/plugin-telemetry/*": [
+        "packages/apps/plugins/plugin-telemetry/src/*"
+      ],
+      "@braneframe/plugin-template": [
+        "packages/apps/plugins/plugin-template/src/index.ts"
+      ],
+      "@braneframe/plugin-template/*": [
+        "packages/apps/plugins/plugin-template/src/*"
+      ],
+      "@braneframe/plugin-theme": [
+        "packages/apps/plugins/plugin-theme/src/index.ts"
+      ],
+      "@braneframe/plugin-theme/*": [
+        "packages/apps/plugins/plugin-theme/src/*"
+      ],
+      "@braneframe/plugin-thread": [
+        "packages/apps/plugins/plugin-thread/src/index.ts"
+      ],
+      "@braneframe/plugin-thread/*": [
+        "packages/apps/plugins/plugin-thread/src/*"
+      ],
+      "@braneframe/plugin-treeview": [
+        "packages/apps/plugins/plugin-treeview/src/index.ts"
+      ],
+      "@braneframe/plugin-treeview/*": [
+        "packages/apps/plugins/plugin-treeview/src/*"
+      ],
+      "@braneframe/plugin-url-sync": [
+        "packages/apps/plugins/plugin-url-sync/src/index.ts"
+      ],
+      "@braneframe/plugin-url-sync/*": [
+        "packages/apps/plugins/plugin-url-sync/src/*"
+      ],
+      "@dxos/aurora": [
+        "packages/ui/aurora/src/index.ts"
+      ],
+      "@dxos/aurora-composer": [
+        "packages/ui/aurora-composer/src/index.ts"
+      ],
+      "@dxos/aurora-composer/*": [
+        "packages/ui/aurora-composer/src/*"
+      ],
+      "@dxos/aurora-table": [
+        "packages/ui/aurora-table/src/index.ts"
+      ],
+      "@dxos/aurora-table/*": [
+        "packages/ui/aurora-table/src/*"
+      ],
+      "@dxos/aurora/*": [
+        "packages/ui/aurora/src/*"
+      ],
+      "@dxos/echo-schema": [
+        "packages/core/echo/echo-schema/src/index.ts"
+      ],
+      "@dxos/echo-schema/*": [
+        "packages/core/echo/echo-schema/src/*"
+      ],
+      "@dxos/react-client": [
+        "packages/sdk/react-client/src/index.ts"
+      ],
+      "@dxos/react-client/*": [
+        "packages/sdk/react-client/src/*"
+      ],
+      "@dxos/react-shell": [
+        "packages/sdk/react-shell/src/index.ts"
+      ],
+      "@dxos/react-shell/*": [
+        "packages/sdk/react-shell/src/*"
+      ],
+      "@dxos/react-surface": [
+        "packages/sdk/react-surface/src/index.ts"
+      ],
+      "@dxos/react-surface/*": [
+        "packages/sdk/react-surface/src/*"
+      ]
+    },
+  }
+}

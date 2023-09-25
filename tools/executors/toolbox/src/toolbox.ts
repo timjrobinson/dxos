@@ -5,7 +5,7 @@
 import chalk from 'chalk';
 import { execSync } from 'child_process';
 import { Table } from 'console-table-printer';
-import fs from 'fs';
+import fs, { existsSync } from 'fs';
 import defaultsDeep from 'lodash.defaultsdeep';
 import pick from 'lodash.pick';
 import { join, relative } from 'path';
@@ -264,6 +264,9 @@ class Toolbox {
           return { path };
         });
 
+        tsConfigJson.compilerOptions ??= {};
+        tsConfigJson.compilerOptions.paths = await this._getTsconfigPaths(project, deps.map(([name]) => name));
+
         const updated = sortJson(tsConfigJson, {
           depth: 3,
           map: {
@@ -280,6 +283,36 @@ class Toolbox {
         await saveJson(tsConfigPath, updated, this.options.verbose);
       }
     }
+  }
+  
+  async _getTsconfigPaths(project: Project, deps: string[]): Promise<Record<string, string[]> | undefined> {
+    const res: Record<string, string[]>  = {};
+    await Promise.all(deps.map(async (dep) => {
+      const dependency = this._getProjectByPackageName(dep)!;
+      const entrypoints = await this._isValidPackageToMap(dependency);
+      if (entrypoints) {
+        res[dependency.name] = [relative(project.path, join(dependency.path, 'src/index.ts'))];
+        res[`${dependency.name}/*`] = [relative(project.path, join(dependency.path, 'src/*'))];
+      }
+    }));
+
+    return res;
+  }
+
+  async _isValidPackageToMap(project: Project): Promise<boolean> {
+    const projectJson = await loadJson<ProjectJson>(join(project.path, 'project.json'));
+
+    // Heuristic to determine if package is suitable for mapping.
+
+    if(projectJson.targets?.compile?.executor !== '@dxos/esbuild:build' || projectJson.targets.compile.options?.bundlePackages?.length > 0) {
+      return false;
+    }
+
+    if(!existsSync(join(project.path, 'src/index.ts'))) {
+      return false;
+    }
+
+    return true;
   }
 
   _getProjectByPackageName(name: string): Project {

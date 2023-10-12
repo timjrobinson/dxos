@@ -9,6 +9,7 @@ import {
   Invitation,
 } from '@dxos/client/invitations';
 import { invariant } from '@dxos/invariant';
+import { log } from '@dxos/log';
 
 export const hostInvitation = async ({
   observable,
@@ -85,6 +86,9 @@ export const acceptInvitation = async ({
           done.wake(invitation);
           break;
         }
+
+        default:
+          log.warn('Unhandled invitation state', { state: invitation.state, invitation });
       }
     },
     (err) => {

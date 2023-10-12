@@ -117,8 +117,11 @@ export const SENTRY_LOG_PROCESSOR = (config: any, entry: any) => {
   withScope((scope) => {
     scope.setLevel(convertLevel(level));
     scope.setContext('dxoslog', entry.context);
-    scope.setTransactionName(getRelativeFilename(meta.F));
-
+    if (!meta) {
+      console.log('received log entry without meta!', entry);
+    } else {
+      scope.setTransactionName(getRelativeFilename(meta.F));
+    }
     // Is this ever used?
     if (error) {
       scope.setExtra('message', message);

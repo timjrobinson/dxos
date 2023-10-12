@@ -137,9 +137,6 @@ export const Grid = ({
     }
   }, [selected, width, height]);
 
-  // TODO(burdon): Remove need for this by removing gaps around cells and instead including padding.
-  const { setNodeRef } = useDroppable({ id, data: { path: id } });
-
   return (
     // TODO(burdon): Combine GridContext.Provider with MosaicContainer custom property (make generic).
     <Mosaic.Container
@@ -153,7 +150,7 @@ export const Grid = ({
       }}
     >
       <GridContext.Provider value={defaultGrid}>
-        <div ref={setNodeRef} className={mx('flex grow overflow-auto', className)}>
+        <div className={mx('flex grow overflow-auto', className)}>
           <div
             ref={containerRef}
             className={mx('grow overflow-auto snap-x snap-mandatory md:snap-none bg-neutral-600')}
@@ -163,17 +160,20 @@ export const Grid = ({
               className='group block relative bg-neutral-500'
               style={{ ...bounds, margin: marginSize }}
             >
-              <div>
-                {matrix.map((row) =>
-                  row.map(({ x, y }) => (
-                    <GridCell
-                      key={`${x}-${y}`}
-                      path={id}
-                      position={{ x, y }}
-                      bounds={getBounds({ x, y }, cellBounds, spacing)}
-                    />
-                  )),
-                )}
+              <div style={{ padding: spacing }}>
+                <div className='relative'>
+                  {matrix.map((row) =>
+                    row.map(({ x, y }) => (
+                      <GridCell
+                        key={`${x}-${y}`}
+                        path={id}
+                        position={{ x, y }}
+                        bounds={getBounds({ x, y }, cellBounds, 0)}
+                        padding={spacing}
+                      />
+                    )),
+                  )}
+                </div>
               </div>
 
               {/* TODO(burdon): Events: onDoubleClick={() => handleSelect(id)} */}
@@ -192,7 +192,7 @@ export const Grid = ({
                         ...getBounds(position, cellBounds, spacing),
                       }}
                       onSelect={() => handleSelect(id)}
-                      debug={debug}
+                      // debug={debug}
                     />
                   );
                 })}
@@ -211,7 +211,12 @@ export const Grid = ({
  * Grid cell.
  */
 // TODO(burdon): Make Cell pluggable (e.g., to include create button).
-const GridCell: FC<{ path: string; position: Position; bounds: Dimension }> = ({ path, position, bounds }) => {
+const GridCell: FC<{ path: string; position: Position; bounds: Dimension; padding?: number }> = ({
+  path,
+  position,
+  bounds,
+  padding,
+}) => {
   const { setNodeRef, isOver } = useDroppable({
     id: Path.create(path, 'cell', `${position.x}-${position.y}`),
     data: { path, position },
@@ -220,7 +225,7 @@ const GridCell: FC<{ path: string; position: Position; bounds: Dimension }> = ({
   return (
     <div
       ref={setNodeRef}
-      style={{ ...bounds }}
+      style={{ ...bounds, padding }}
       className='absolute flex justify-center items-center grow select-none cursor-pointer'
     >
       <div

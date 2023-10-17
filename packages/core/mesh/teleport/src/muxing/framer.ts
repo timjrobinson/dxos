@@ -11,6 +11,7 @@ import { log } from '@dxos/log';
 import { type RpcPort } from './rpc-port';
 
 const FRAME_LENGTH_SIZE = 2;
+const MAX_WRITE_CALLBACKS = 10;
 
 /**
  * Converts a stream of binary messages into a framed RpcPort.
@@ -25,6 +26,7 @@ export class Framer {
 
   private _bytesSent = 0;
   private _bytesReceived = 0;
+  private _backpressureActivated = false;
 
   private _writable = true;
 
@@ -33,7 +35,8 @@ export class Framer {
   // TODO(egorgripasov): Consider using a Transform stream if it provides better backpressure handling.
   private readonly _stream = new Duplex({
     objectMode: false,
-    read: () => {
+    read: (size) => {
+      log('framer read', { size });
       this._processResponseQueue();
     },
     write: (chunk, encoding, callback) => {
@@ -69,6 +72,16 @@ export class Framer {
         this._bytesSent += frame.length;
         this._writable = this._stream.push(frame);
         if (!this._writable) {
+          if (!this._backpressureActivated) {
+            this._backpressureActivated = true;
+            log.info('backpressure PAUSE');
+          } else {
+            if (this._sendCallbacks.length > MAX_WRITE_CALLBACKS) {
+              log.warn(
+                `backpressure MAX_WRITE_CALLBACKS exceeded ${this._sendCallbacks.length} > ${MAX_WRITE_CALLBACKS}}`,
+              );
+            }
+          }
           this._sendCallbacks.push(resolve);
         } else {
           resolve();
@@ -107,6 +120,11 @@ export class Framer {
     this._writable = true;
     this.drain.emit();
     responseQueue.forEach((cb) => cb());
+    if (this._backpressureActivated) {
+      log.info('backpressure RESUME done');
+      this._backpressureActivated = false;
+    }
+    log('done processResponseQueue');
   }
 
   /**
@@ -135,6 +153,7 @@ export class Framer {
   }
 
   destroy() {
+    log('destroy');
     // TODO(dmaretskyi): Call stream.end() instead?
     if (this._stream.readableLength > 0) {
       log.info('framer destroyed while there are still read bytes in the buffer.');

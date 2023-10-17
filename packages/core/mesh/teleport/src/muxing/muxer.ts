@@ -155,11 +155,18 @@ export class Muxer {
     };
     channel.destroy = (err) => {
       // TODO(dmaretskyi): Call stream.end() instead?
-      stream.destroy(err);
+      if (err) {
+        log('destroying muxer stream', { err, channel });
+        stream.destroy(err);
+      } else {
+        log('end muxer stream: TODO: end instead?', { err, channel });
+        stream.destroy();
+      }
     };
 
     // NOTE: Make sure channel.push is set before sending the command.
     try {
+      log('createStream sendCommand');
       await this._sendCommand(
         {
           openChannel: {
@@ -206,6 +213,9 @@ export class Muxer {
 
     const port: RpcPort = {
       send: async (data: Uint8Array, timeout?: number) => {
+        if (channel.tag === 'dxos.mesh.teleport.gossip/rpc') {
+          log('RpcPort sendData sendCommand');
+        }
         await this._sendData(channel, data, timeout);
         // TODO(dmaretskyi): Debugging.
         // appendFileSync('log.json', JSON.stringify(schema.getCodecForType('dxos.rpc.RpcMessage').decode(data), null, 2) + '\n')
@@ -254,6 +264,7 @@ export class Muxer {
 
     this._closing = true;
 
+    log('destroy muxer', { err });
     await this._sendCommand(
       {
         close: {
@@ -329,7 +340,9 @@ export class Muxer {
     }
     this._disposed = true;
 
+    log('dispose closing muxer', { err });
     this.afterClosed.emit(err);
+    log('dispose done closing muxer', { err });
 
     // Make it easy for GC.
     this._channelsByLocalId.clear();
@@ -341,6 +354,7 @@ export class Muxer {
       log.warn('Received command after disposed', { cmd });
       return;
     }
+    // log('Received command', { cmd });
 
     if (cmd.close) {
       if (!this._closing) {
@@ -362,6 +376,7 @@ export class Muxer {
 
       // Flush any buffered data.
       for (const data of channel.buffer) {
+        log('openChannel sendCommand');
         await this._sendCommand(
           {
             data: {
@@ -388,11 +403,15 @@ export class Muxer {
       log.info('ignoring sendCommand after disposed', { cmd });
       return;
     }
+    log('sendCommand');
     try {
       const trigger = new Trigger<void>();
       this._balancer.pushData(Command.encode(cmd), trigger, channelId);
       await trigger.wait({ timeout });
     } catch (err: any) {
+      // TODO(nf): dispose instead?
+      log('failed to send command, destroying', { cmd, channelId, err });
+      // await this.dispose(err);
       await this.destroy(err);
     }
   }
@@ -435,6 +454,7 @@ export class Muxer {
       channel.buffer.push(data);
       return;
     }
+    // log('sendData sendCommand');
     await this._sendCommand(
       {
         data: {

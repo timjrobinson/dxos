@@ -176,7 +176,7 @@ export class Swarm {
 
     if (swarmEvent.peerAvailable) {
       const peerId = PublicKey.from(swarmEvent.peerAvailable.peer);
-      log('new peer', { peerId });
+      log.info('new peer', { peerId });
       if (!peerId.equals(this._ownPeerId)) {
         const peer = this._getOrCreatePeer(peerId);
         peer.advertizing = true;
@@ -201,18 +201,18 @@ export class Swarm {
   async onOffer(message: OfferMessage): Promise<Answer> {
     log('offer', { message });
     if (this._ctx.disposed) {
-      log('ignored for disposed swarm');
+      log.warn('ignored for disposed swarm');
       return { accept: false };
     }
 
     // Id of the peer offering us the connection.
     invariant(message.author);
     if (!message.recipient?.equals(this._ownPeerId)) {
-      log('rejecting offer with incorrect peerId', { message });
+      log.info('rejecting offer with incorrect peerId', { message });
       return { accept: false };
     }
     if (!message.topic?.equals(this._topic)) {
-      log('rejecting offer with incorrect topic', { message });
+      log.info('rejecting offer with incorrect topic', { message });
       return { accept: false };
     }
 
@@ -282,7 +282,7 @@ export class Swarm {
             // If the peer rejected our connection remove it from the set of candidates.
             // TODO(dmaretskyi): Set flag instead.
             if (this._peers.has(peerId)) {
-              log('peer rejected connection', { peerId });
+              log.warn('peer rejected connection', { peerId });
               void this._destroyPeer(peerId, 'peer rejected connection');
             }
           },

@@ -148,6 +148,7 @@ export class Peer {
           await this._connectionLimiter.connecting(message.sessionId);
           connection.initiate();
 
+          log('opening connection onOffer');
           await connection.openConnection();
         } catch (err: any) {
           if (!(err instanceof CancelledError)) {
@@ -181,6 +182,7 @@ export class Peer {
       await this._connectionLimiter.connecting(sessionId);
       connection.initiate();
 
+      log('passed connection limiter');
       answer = await this._signalMessaging.offer({
         author: this.localPeerId,
         recipient: this.id,
@@ -194,7 +196,7 @@ export class Peer {
         return;
       }
     } catch (err: any) {
-      log('initiation error: send offer', { err, topic: this.topic, peerId: this.localPeerId, remoteId: this.id });
+      log.info('initiation error: send offer', { err, topic: this.topic, peerId: this.localPeerId, remoteId: this.id });
       await connection.abort(err);
       throw err;
     } finally {
@@ -207,7 +209,7 @@ export class Peer {
         return;
       }
     } catch (err: any) {
-      log('initiation error: accept answer', {
+      log.info('initiation error: accept answer', {
         err,
         topic: this.topic,
         peerId: this.localPeerId,
@@ -224,7 +226,7 @@ export class Peer {
       await connection.openConnection();
       this._callbacks.onAccepted();
     } catch (err: any) {
-      log('initiation error: open connection', {
+      log.info('initiation error: open connection', {
         err,
         topic: this.topic,
         peerId: this.localPeerId,
@@ -380,6 +382,7 @@ export class Peer {
   @synchronized
   async destroy(reason?: Error) {
     await this._ctx.dispose();
+    // debugger;
     log('Destroying peer', { peerId: this.id, topic: this.topic });
 
     // Won't throw.

@@ -46,6 +46,10 @@ export class SwarmMessenger implements SignalMessenger {
     this._topic = topic;
   }
 
+  abort(err: Error) {
+    log('abort');
+  }
+
   async receiveMessage({
     author,
     recipient,

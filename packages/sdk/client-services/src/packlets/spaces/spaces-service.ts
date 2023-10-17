@@ -8,7 +8,6 @@ import { type CredentialProcessor } from '@dxos/credentials';
 import { raise } from '@dxos/debug';
 import { type DataServiceSubscriptions, type SpaceManager } from '@dxos/echo-pipeline';
 import { invariant } from '@dxos/invariant';
-import { log } from '@dxos/log';
 import { ApiError, SpaceNotFoundError, encodeError } from '@dxos/protocols';
 import {
   type CreateEpochRequest,
@@ -75,7 +74,7 @@ export class SpacesServiceImpl implements SpacesService {
         async () => {
           const dataSpaceManager = await this._getDataSpaceManager();
           const spaces = Array.from(dataSpaceManager.spaces.values()).map((space) => this._serializeSpace(space));
-          log('update', { spaces });
+          // log('update', { spaces });
           next({ spaces });
         },
         { maxFrequency: process.env.NODE_ENV === 'test' ? undefined : 2 },

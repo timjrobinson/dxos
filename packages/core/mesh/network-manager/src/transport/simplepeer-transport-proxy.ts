@@ -56,7 +56,7 @@ export class SimplePeerTransportProxy implements Transport {
     this._serviceStream.waitUntilReady().then(
       () => {
         this._serviceStream.subscribe(async (event: BridgeEvent) => {
-          log('SimplePeerTransportProxy: event', event);
+          // log('SimplePeerTransportProxy: event', event);
           if (event.connection) {
             await this._handleConnection(event.connection);
           } else if (event.data) {

@@ -8,7 +8,7 @@ import { Context } from '@dxos/context';
 import { invariant } from '@dxos/invariant';
 import { PublicKey } from '@dxos/keys';
 import { log } from '@dxos/log';
-import { RateLimitExceededError, trace } from '@dxos/protocols';
+import { RateLimitExceededError, TimeoutError, trace } from '@dxos/protocols';
 import { type Runtime } from '@dxos/protocols/proto/dxos/config';
 import { type SwarmEvent } from '@dxos/protocols/proto/dxos/mesh/signal';
 
@@ -134,6 +134,7 @@ export class WebsocketSignalManager implements SignalManager {
 
     void this._forEachServer(async (server, serverName) => {
       void server.sendMessage({ author, recipient, payload }).catch((err) => {
+        // debugger;
         if (err instanceof RateLimitExceededError) {
           log.info('WSS rate limit exceeded', { err });
         } else if (err instanceof TimeoutError || err.constructor.name === 'TimeoutError') {
@@ -157,6 +158,7 @@ export class WebsocketSignalManager implements SignalManager {
       return;
     }
     this.failureCount.set(serverName!, (this.failureCount.get(serverName!) ?? 0) + 1);
+    log('Incrementing failure count', { serverName, failureCount: this.failureCount.get(serverName!) });
   }
 
   async subscribeMessages(peerId: PublicKey) {

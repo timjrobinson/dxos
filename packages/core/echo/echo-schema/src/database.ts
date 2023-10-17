@@ -248,8 +248,20 @@ export class EchoDatabase {
       const state = item.state as DocumentModelState;
       if (!state.type) {
         return new TypedObject();
-      } else {
-        return new TypedObject(undefined, { type: state.type });
+      }
+
+      if (state.type.protocol === 'protobuf') {
+        const type = state.type.itemId;
+        const Proto = this._graph.types.getPrototype(type);
+        if (!Proto) {
+          log.info('Unknown schema type', { type: state.type?.encode() });
+          return new TypedObject(); // TODO(burdon): Expando?
+        } else {
+          return new Proto();
+        }
+      } else if (state.type.protocol === undefined) {
+        const schema = this.getObjectById(state.type.itemId);
+        return new TypedObject(undefined, { schema: schema as Schema | undefined });
       }
     } else if (item.modelType === TextModel.meta.type) {
       return new TextObject();

@@ -203,7 +203,8 @@ export class RpcPeer {
         log('closing waiting on bye');
         await this._byeTrigger.wait({ timeout });
       } catch (err: any) {
-        log('error closing peer', { err });
+        const name = this._params.port.constructor.toString();
+        log(`error closing peer waiting for bye on ${name}`, { err });
         return;
       }
     }
@@ -265,13 +266,14 @@ export class RpcPeer {
       if (req.stream) {
         log('stream request', { method: req.method });
         this._callStreamHandler(req, (response) => {
+          /*
           log('sending stream response', {
             method: req.method,
             response: response.payload?.type_url,
             error: response.error,
             close: response.close,
           });
-
+*/
           void this._sendMessage({ response }).catch((err) => {
             log.warn('failed during close', err);
           });
@@ -400,6 +402,7 @@ export class RpcPeer {
     if (response.payload) {
       return response.payload;
     } else if (response.error) {
+      // log.warn('received error', { error: response.error });
       throw decodeRpcError(response.error, method);
     } else {
       throw new Error('Malformed response.');

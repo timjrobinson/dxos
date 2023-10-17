@@ -34,6 +34,7 @@ export class Teleport {
 
   private readonly _ctx = new Context({
     onError: (err) => {
+      log('destroy teleport due to onError', { err });
       void this.destroy(err).catch(() => {
         log.error('Error during destroy', err);
       });
@@ -84,6 +85,7 @@ export class Teleport {
         try {
           await this._openExtension(name);
         } catch (err: any) {
+          log('destroy teleport due to error on openExtension', { err });
           await this.destroy(err);
         }
       }
@@ -92,6 +94,7 @@ export class Teleport {
     {
       // Destroy Teleport when the stream is closed.
       this._muxer.stream.on('close', async () => {
+        log('destroy teleport due to muxer stream close');
         if (this._destroying || this._aborting) {
           log('destroy teleport due to muxer stream close, skipping due to already destroying/aborting');
           return;
@@ -100,6 +103,7 @@ export class Teleport {
       });
 
       this._muxer.stream.on('error', async (err) => {
+        log('destroy teleport due to stream error', { err });
         await this.destroy(err);
       });
     }
@@ -153,17 +157,20 @@ export class Teleport {
       return;
     }
 
+    log('aborting.. Teleport');
     await this._ctx.dispose();
 
     for (const extension of this._extensions.values()) {
       try {
+        log('abort', { name: extension.constructor.name });
         await extension.onAbort(err);
       } catch (err: any) {
         log.catch(err);
       }
     }
-
+    log('abort destroying muxer');
     await this._muxer.destroy(err);
+    log('abort done destroying muxer');
   }
 
   @synchronized
@@ -173,21 +180,28 @@ export class Teleport {
       return;
     }
     this._destroying = true;
+    // console.trace();
     if (this._ctx.disposed) {
       return;
     }
+    log.info('destroy closing teleport, ctx dispose and close extensions');
 
     await this._ctx.dispose();
 
     for (const extension of this._extensions.values()) {
       try {
+        log('destroy closing teleport: onClose extension', { extensionClass: extension.constructor.name });
+
         await extension.onClose(err);
       } catch (err: any) {
+        log('destroy caught error onClose extension');
         log.catch(err);
       }
+      log('destroy closing teleport: onClose extension DONE', { extensionClass: extension.constructor.name });
     }
 
-    await this._muxer.close();
+    log.info('destroy closing teleport, done ctx dispose and close extensions: TODO: destroy instead?');
+    await this._muxer.close(err);
   }
 
   addExtension(name: string, extension: TeleportExtension) {

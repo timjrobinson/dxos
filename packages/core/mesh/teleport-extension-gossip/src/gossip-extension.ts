@@ -46,7 +46,7 @@ export class GossipExtension implements TeleportExtension {
       handlers: {
         GossipService: {
           announce: async (message: GossipMessage) => {
-            log('received announce', { localPeerId: context.localPeerId, remotePeerId: context.remotePeerId, message });
+            // log('received announce', { localPeerId: context.localPeerId, remotePeerId: context.remotePeerId, message });
             await this._callbacks.onAnnounce?.(message);
           },
         },
@@ -68,6 +68,9 @@ export class GossipExtension implements TeleportExtension {
     log('abort', { err });
     try {
       await this._rpc?.abort();
+      log('onClose gossip-extension');
+      //      this._sendInterval && clearInterval(this._sendInterval);
+      //      await this._callbacks.onClose?.(err);
     } catch (err) {
       log.catch(err);
     } finally {
@@ -80,6 +83,7 @@ export class GossipExtension implements TeleportExtension {
     if (this._closed) {
       return;
     }
+    // TODO(nf): optimize
     await this._opened.wait();
     invariant(this._rpc, 'RPC not initialized');
     await this._rpc.rpc.GossipService.announce(message);

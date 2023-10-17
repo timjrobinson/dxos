@@ -34,4 +34,6 @@ export interface SignalMessenger {
    * Reliably send a signal to a peer.
    */
   signal(msg: SignalMessage): Promise<void>;
+
+  // abort(err: Error): void;
 }

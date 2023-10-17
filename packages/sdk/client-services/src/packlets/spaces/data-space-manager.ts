@@ -186,7 +186,7 @@ export class DataSpaceManager {
   }
 
   private async _constructSpace(metadata: SpaceMetadata) {
-    log('construct space', { metadata });
+    log.info(`construct space ${metadata.key.truncate()}`, { metadata });
     const gossip = new Gossip({
       localPeerId: this._signingContext.deviceKey,
     });

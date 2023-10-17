@@ -72,6 +72,9 @@ export class Presence {
           identityKey: this._params.identityKey,
           connections: this._params.gossip.getConnections(),
         };
+        if (peerState.connections?.length && peerState.connections?.length > 0) {
+          log(`send presence to ${peerState.connections.length} connections`, { peerState });
+        }
         await this._params.gossip.postMessage(PRESENCE_CHANNEL_ID, peerState);
       },
       _params.announceInterval,

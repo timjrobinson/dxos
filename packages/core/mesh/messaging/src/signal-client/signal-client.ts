@@ -300,7 +300,7 @@ export class SignalClient implements SignalMethods {
           },
 
           onError: (error) => {
-            log('socket error', { error, state: this._state });
+            log.info('socket error', { error, state: this._state });
             this._lastError = error;
             if (this._state !== SignalState.CONNECTED && this._state !== SignalState.CONNECTING) {
               this._incrementReconnectTimeout();

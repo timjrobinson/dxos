@@ -117,6 +117,8 @@ export class SignalRPCClient {
       this._closed = true;
 
       log.warn(event.message ?? 'Socket error', { url: this._url });
+      log.warn(event.error);
+      // throw event.error;
     };
 
     log.trace('dxos.mesh.signal-rpc-client.constructor', trace.end({ id: traceId }));

@@ -127,6 +127,7 @@ export class Gossip {
       );
       return;
     }
+    log(`gossip message ${channel} to ${this._connections.size}`, { payload });
     for (const extension of this._connections.values()) {
       this._sendAnnounceWithTimeoutTracking(extension, {
         peerId: this._params.localPeerId,
@@ -177,6 +178,7 @@ export class Gossip {
         if (this._params.localPeerId.equals(message.peerId) || remotePeerId.equals(message.peerId)) {
           return;
         }
+        log(`propogate gossip message ${message.channelId} from ${message.peerId}`, { message });
         return this._sendAnnounceWithTimeoutTracking(extension, message).catch((err) => log(err));
       }),
     );

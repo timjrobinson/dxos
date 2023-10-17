@@ -161,18 +161,45 @@ export class Connection {
       initiator: this.initiator,
     });
 
+    log('changeState CONNECTING');
     this._changeState(ConnectionState.CONNECTING);
 
     // TODO(dmaretskyi): Initialize only after the transport has established connection.
     this._protocol.open().catch((err) => {
+      log('error opening protocol', { err });
       this.errors.raise(err);
     });
-
+    log('opened protocol');
     // TODO(dmaretskyi): Piped streams should do this automatically, but it break's without this code.
+    // TODO(nf): figure out what is invoking this when we are aborting.
     this._protocol.stream.on('close', () => {
       log('protocol stream closed');
+      // console.trace();
       this.close(new ProtocolError('protocol stream closed')).catch((err) => this.errors.raise(err));
     });
+
+    /*
+    this._protocol.stream.on('error', (err) => {
+      log.warn('protocol stream error', { err });
+    });
+
+    this._protocol.stream.on('pause', () => {
+      log.warn('protocol stream paused');
+    });
+
+    this._protocol.stream.on('resume', () => {
+      log.warn('protocol stream resume');
+    });
+
+    this._protocol.stream.on('readable', () => {
+      log.warn('protocol stream readable');
+    });
+
+    this._protocol.stream.on('drain', () => {
+      log.warn('protocol stream drain');
+    });
+
+    */
 
     scheduleTask(
       this.connectedTimeoutContext,
@@ -189,6 +216,7 @@ export class Connection {
       stream: this._protocol.stream,
       sendSignal: async (signal) => this._sendSignal(signal),
     });
+    log('created transport');
 
     this._transport.connected.once(async () => {
       this._changeState(ConnectionState.CONNECTED);
@@ -197,8 +225,9 @@ export class Connection {
     });
 
     this._transport.closed.once(() => {
+      // TODO(nf): fix
       this._transport = undefined;
-      log('abort triggered by transport close');
+      log('abort triggered by transport close: TODO: dont abort');
       this.abort().catch((err) => this.errors.raise(err));
     });
 
@@ -220,12 +249,18 @@ export class Connection {
       }
 
       if (this._state !== ConnectionState.CLOSED && this._state !== ConnectionState.CLOSING) {
+        log(`connection: transport error raising because in ${this._state} state`);
         await this.connectedTimeoutContext.dispose();
         this.errors.raise(err);
+      } else {
+        log(`connection: transport error ignoring because in ${this._state} state`);
       }
     });
 
     // Replay signals that were received before transport was created.
+    if (this._incomingSignalBuffer.length > 0) {
+      log.info(`signalBuffer replaying ${this._incomingSignalBuffer.length} signal messages`);
+    }
     for (const signal of this._incomingSignalBuffer) {
       void this._transport.signal(signal); // TODO(burdon): Remove async?
     }
@@ -239,8 +274,13 @@ export class Connection {
   // TODO(nf): make the caller responsible for recording the reason and determining flow control.
   // TODO(nf): make abort cancel an existing close in progress.
   async abort(err?: Error) {
+    // debugger;
     log('aborting...', { err });
-    if (this._state === ConnectionState.CLOSED || this._state === ConnectionState.ABORTED) {
+    if (
+      this._state === ConnectionState.CLOSED ||
+      this._state === ConnectionState.ABORTED ||
+      this._state === ConnectionState.ABORTING
+    ) {
       log(`abort ignored: already ${this._state}`, this.closeReason);
       return;
     }
@@ -253,6 +293,8 @@ export class Connection {
 
     await this._ctx.dispose();
 
+    log('aborting...', { peerId: this.ownId });
+
     try {
       // Forcefully close the stream flushing any unsent data packets.
       log('aborting protocol... ');
@@ -261,6 +303,7 @@ export class Connection {
       log.catch(err);
     }
 
+    log('aborting... stream closed ');
     try {
       // After the transport is closed streams are disconnected.
       await this._transport?.destroy();
@@ -278,6 +321,10 @@ export class Connection {
 
   @synchronized
   async close(err?: Error) {
+    if (!err) {
+      log.warn('connection closing for unknown close reason');
+      debugger;
+    }
     if (!this.closeReason) {
       this.closeReason = err?.message;
     } else {
@@ -296,16 +343,19 @@ export class Connection {
     await this.connectedTimeoutContext.dispose();
     await this._ctx.dispose();
 
-    log('closing...', { peerId: this.ownId });
+    log('closing... because', { peerId: this.ownId, err });
 
     if (lastState === ConnectionState.CONNECTED) {
       try {
         // Gracefully close the stream flushing any unsent data packets.
+        log('closing... protocol  ');
         await this._protocol.close();
       } catch (err: any) {
         log.catch(err);
       }
 
+      log('closing... stream closed ');
+      log(`now destroying transport ${this._transport}`);
       try {
         // After the transport is closed streams are disconnected.
         await this._transport?.destroy();
@@ -313,7 +363,6 @@ export class Connection {
         log.catch(err);
       }
     }
-
     log('closed', { peerId: this.ownId });
     this._changeState(ConnectionState.CLOSED);
     this._callbacks?.onClosed?.(err);
@@ -338,6 +387,9 @@ export class Connection {
       const signals = [...this._outgoingSignalBuffer];
       this._outgoingSignalBuffer.length = 0;
 
+      if (signals.length > 1) {
+        log.info(`sending signalBatch of len ${signals.length}`);
+      }
       await this._signalMessaging.signal({
         author: this.ownId,
         recipient: this.remoteId,

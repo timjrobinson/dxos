@@ -117,6 +117,7 @@ export class SimplePeerTransport implements Transport {
         log.catch(err);
       }
 
+      log('destroying after no error handling after peer on error?');
       await this.destroy();
     });
     log.trace('dxos.mesh.webrtc-transport.constructor', trace.end({ id: this._instanceId }));
@@ -127,6 +128,7 @@ export class SimplePeerTransport implements Transport {
     if (this._closed) {
       return;
     }
+    log('destroy, closing, destroying peer');
     this._closed = true;
     this._disconnectStreams();
     this._peer!.destroy();

@@ -54,6 +54,8 @@ export class TcpTransport implements Transport {
           }).catch(err => {
             if (!this._destroyed) {
               this.errors.raise(err);
+            } else {
+              log.warn('error on desroyed server', { err });
             }
           });
 

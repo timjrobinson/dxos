@@ -147,6 +147,7 @@ export class ReplicatorExtension implements TeleportExtension {
 
   async onAbort(err?: Error | undefined) {
     log('abort', { err });
+    // return this.onClose(err);
 
     await this._ctx.dispose();
     await this._rpc?.abort();

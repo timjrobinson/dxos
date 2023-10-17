@@ -76,10 +76,13 @@ export class Balancer {
   }
 
   destroy() {
+    log('destroy');
     if (this._sendBuffers.size !== 0) {
       log.info('destroying balancer with pending calls');
     }
     this._sendBuffers.clear();
+    log('framer destroy');
+
     this._framer.destroy();
   }
 
@@ -143,6 +146,14 @@ export class Balancer {
     });
   }
 
+  /*
+  private dumpBuffers(): Object {
+    return Object.fromEntries(
+      Array.from(this._sendBuffers, ([key, value]) => [`${key}: ${this._channelTags.get(key)}`, value.length]),
+    );
+  }
+ */
+  //
   // get the next chunk or null if there are no chunks remaining
 
   private _getNextChunk(): ChunkEnvelope | null {

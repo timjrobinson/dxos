@@ -252,10 +252,15 @@ export class SpaceProtocolSession implements WireProtocol {
 
   async close(): Promise<void> {
     log('close');
+    log('closing... teleport  ');
     await this._teleport.close();
+    log('space close done');
   }
 
   async abort(): Promise<void> {
+    log.info('abort');
+    log('aborting teleport  ', { tele: this._teleport });
     await this._teleport.abort();
+    log.info('abort done');
   }
 }

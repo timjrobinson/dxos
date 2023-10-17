@@ -129,6 +129,7 @@ export class SignalServerRunner {
 
     server.on('close', (code) => {
       if ((code! -= 0)) {
+        // throw new Error(`TestServer exited with code ${code}`);
         if (this.onError) {
           this.onError?.(new Error(`TestServer exited with code ${code}`));
         } else {

@@ -72,6 +72,9 @@
       "path": "../../core/functions"
     },
     {
+      "path": "../../core/mesh/network-manager"
+    },
+    {
       "path": "../../core/mesh/rpc"
     },
     {

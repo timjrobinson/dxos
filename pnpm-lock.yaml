@@ -2331,6 +2331,28 @@ importers:
       readable-stream: 3.6.0
       util: 0.12.5
 
+  packages/common/observability:
+    specifiers:
+      '@dxos/async': workspace:*
+      '@dxos/config': workspace:*
+      '@dxos/context': workspace:*
+      '@dxos/debug': workspace:*
+      '@dxos/invariant': workspace:*
+      '@dxos/log': workspace:*
+      '@dxos/node-std': workspace:*
+      '@dxos/util': workspace:*
+      datadog-metrics: ^0.11.1
+    dependencies:
+      '@dxos/async': link:../async
+      '@dxos/config': link:../../sdk/config
+      '@dxos/context': link:../context
+      '@dxos/debug': link:../debug
+      '@dxos/invariant': link:../invariant
+      '@dxos/log': link:../log
+      '@dxos/node-std': link:../node-std
+      '@dxos/util': link:../util
+      datadog-metrics: 0.11.1
+
   packages/common/phoenix:
     specifiers:
       '@dxos/async': workspace:*
@@ -2570,6 +2592,7 @@ importers:
       '@dxos/context': workspace:*
       '@dxos/invariant': workspace:*
       '@dxos/log': workspace:*
+      '@dxos/observability': workspace:*
       '@dxos/sentry': workspace:*
       '@dxos/util': workspace:*
       '@segment/snippet': ^4.15.3
@@ -2581,6 +2604,7 @@ importers:
       '@dxos/context': link:../context
       '@dxos/invariant': link:../invariant
       '@dxos/log': link:../log
+      '@dxos/observability': link:../observability
       '@dxos/sentry': link:../sentry
       '@dxos/util': link:../util
       '@segment/snippet': 4.15.3
@@ -3511,6 +3535,7 @@ importers:
       '@dxos/hello-template': workspace:*
       '@dxos/invariant': workspace:*
       '@dxos/log': workspace:*
+      '@dxos/observability': workspace:*
       '@dxos/plate': workspace:*
       '@dxos/process': workspace:*
       '@dxos/protocols': workspace:*
@@ -3565,6 +3590,7 @@ importers:
       '@dxos/hello-template': link:../../apps/templates/hello-template
       '@dxos/invariant': link:../../common/invariant
       '@dxos/log': link:../../common/log
+      '@dxos/observability': link:../../common/observability
       '@dxos/plate': link:../../common/plate
       '@dxos/process': link:../../common/process
       '@dxos/protocols': link:../../core/protocols
@@ -6442,7 +6468,7 @@ packages:
       '@babel/helper-validator-option': 7.18.6
       browserslist: 4.21.4
       lru-cache: 5.1.1
-      semver: 6.3.0
+      semver: 6.3.1
 
   /@babel/helper-compilation-targets/7.22.15:
     resolution: {integrity: sha512-y6EEzULok0Qvz8yyLkCvVX+02ic+By2UdOhylwUOvOn9dvYc9mKICJuuU1n1XBI02YWsNsnrY1kc6DVbjcXbtw==}
@@ -9167,6 +9193,24 @@ packages:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
+  /@datadog/datadog-api-client/1.18.0:
+    resolution: {integrity: sha512-taLUl7qXP3a4m2sqVM9tbtMeUPum4yMCkdhnqsFf6n+WUq6oFpw6Ycqigdfv8Emto7QFzBF9if0lOnoC88NTpg==}
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      '@types/buffer-from': 1.1.0
+      '@types/node': 18.11.9
+      '@types/pako': 1.0.5
+      buffer-from: 1.1.2
+      cross-fetch: 3.1.5
+      es6-promise: 4.2.8
+      form-data: 4.0.0
+      loglevel: 1.8.1
+      pako: 2.1.0
+      url-parse: 1.5.10
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@devicefarmer/adbkit-logcat/2.1.3:
     resolution: {integrity: sha512-yeaGFjNBc/6+svbDeul1tNHtNChw6h8pSHAt5D+JsedUrMTN7tla7B15WLDyekxsuS2XlZHRxpuC6m92wiwCNw==}
     engines: {node: '>= 4'}
@@ -11589,7 +11633,6 @@ packages:
     dependencies:
       '@nx/cypress': 16.5.4_qhptqrzqo7bwtm33kpvmsos7ve
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - cypress
@@ -11633,7 +11676,6 @@ packages:
       '@nx/eslint-plugin': 16.8.1_4v7kbp3q3j2n336mr2nodvz57y
       '@typescript-eslint/parser': 6.7.0_rngtr6f3b25lvetpihwplgecf4
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -11652,7 +11694,6 @@ packages:
     dependencies:
       '@nx/jest': 16.5.4_ebxsb5ytaojlvyq6j3l6ecuzii
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@types/node'
@@ -11670,7 +11711,6 @@ packages:
     dependencies:
       '@nx/js': 16.5.4_st3ukm3rnd3xadn2fxesh4boby_eoiemzzyseqzjynwznlrcdpipu
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - debug
@@ -11685,7 +11725,6 @@ packages:
     dependencies:
       '@nx/js': 16.8.1_ucnxlcwbwhxru7e5ww4bc6yjba
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -11702,7 +11741,6 @@ packages:
     dependencies:
       '@nx/linter': 16.5.4_qhptqrzqo7bwtm33kpvmsos7ve
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - debug
@@ -11726,7 +11764,6 @@ packages:
     dependencies:
       '@nx/storybook': 16.5.4_qhptqrzqo7bwtm33kpvmsos7ve
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - cypress
@@ -11766,7 +11803,6 @@ packages:
     dependencies:
       '@nx/vite': 16.5.4_xxzhsuqrsbs6wyvhvm37cpe46m_qgit66yh2vyynsv7uxdneek4qa
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - debug
@@ -11782,7 +11818,6 @@ packages:
     dependencies:
       '@nx/web': 16.5.4_eoiemzzyseqzjynwznlrcdpipu
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - debug
@@ -11829,7 +11864,6 @@ packages:
       dotenv: 10.0.0
       semver: 7.5.3
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - debug
@@ -11905,7 +11939,6 @@ packages:
       semver: 7.5.3
       tslib: 2.6.0
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -11936,7 +11969,6 @@ packages:
       resolve.exports: 1.1.0
       tslib: 2.6.0
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@types/node'
@@ -11970,7 +12002,7 @@ packages:
       '@phenomnomnominal/tsquery': 5.0.1_typescript@5.2.2
       babel-plugin-const-enum: 1.2.0_@babel+core@7.21.3
       babel-plugin-macros: 2.8.0
-      babel-plugin-transform-typescript-metadata: 0.3.2_@babel+core@7.21.3
+      babel-plugin-transform-typescript-metadata: 0.3.2
       chalk: 4.1.2
       detect-port: 1.5.1
       fast-glob: 3.2.7
@@ -11982,7 +12014,6 @@ packages:
       source-map-support: 0.5.19
       tslib: 2.6.0
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - debug
@@ -12013,7 +12044,7 @@ packages:
       '@phenomnomnominal/tsquery': 5.0.1_typescript@5.2.2
       babel-plugin-const-enum: 1.2.0_@babel+core@7.22.19
       babel-plugin-macros: 2.8.0
-      babel-plugin-transform-typescript-metadata: 0.3.2_@babel+core@7.22.19
+      babel-plugin-transform-typescript-metadata: 0.3.2
       chalk: 4.1.2
       detect-port: 1.5.1
       fast-glob: 3.2.7
@@ -12027,7 +12058,6 @@ packages:
       tsconfig-paths: 4.1.2
       tslib: 2.6.0
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - '@swc/wasm'
@@ -12054,7 +12084,6 @@ packages:
       tmp: 0.2.1
       tslib: 2.6.0
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - debug
@@ -12257,7 +12286,6 @@ packages:
       dotenv: 10.0.0
       semver: 7.5.3
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - cypress
@@ -12283,7 +12311,6 @@ packages:
       enquirer: 2.3.6
       vite: 4.3.9_@types+node@18.11.9
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - debug
@@ -12307,7 +12334,6 @@ packages:
       ignore: 5.2.4
       tslib: 2.6.0
     transitivePeerDependencies:
-      - '@babel/traverse'
       - '@swc-node/register'
       - '@swc/core'
       - debug
@@ -17028,6 +17054,12 @@ packages:
     resolution: {integrity: sha512-wJsiX1tosQ+J5+bY5LrSahHxr2wT+uME5UDwdN1kg4frt40euqA+wzECkmq4t5QbveHiJepfdThgQrPw6KiSlg==}
     dev: false
 
+  /@types/buffer-from/1.1.0:
+    resolution: {integrity: sha512-BLFpLBcN+RPKUsFxqRkMiwqTOOdi+TrKr5OpLJ9qCnUdSxS6S80+QRX/mIhfR66u0Ykc4QTkReaejOM2ILh+9Q==}
+    dependencies:
+      '@types/node': 18.11.9
+    dev: false
+
   /@types/bytes/3.1.1:
     resolution: {integrity: sha512-lOGyCnw+2JVPKU3wIV0srU0NyALwTBJlVSx5DfMQOFuuohA8y9S8orImpuIQikZ0uIQ8gehrRjxgQC1rLRi11w==}
     dev: false
@@ -17835,6 +17867,10 @@ packages:
 
   /@types/offscreencanvas/2019.3.0:
     resolution: {integrity: sha512-esIJx9bQg+QYF0ra8GnvfianIY8qWB0GBx54PK5Eps6m+xTj86KLavHv6qDhzKcu5UUOgNfJ2pWaIIV7TRUd9Q==}
+    dev: false
+
+  /@types/pako/1.0.5:
+    resolution: {integrity: sha512-cg6x1RjMyCYoAdhOyNC/144EqhdHJXXZiiTgN3o+ZtOu4+ZQVN5msZgNyxzDI1w+dMYDdRamDzto3+bkR3FFQQ==}
     dev: false
 
   /@types/parse-json/4.0.0:
@@ -20147,7 +20183,7 @@ packages:
   /axios/1.3.4_debug@4.3.4:
     resolution: {integrity: sha512-toYm+Bsyl6VC5wSkfkbbNB6ROv7KY93PEBBL6xyDczaIHasAiv4wPqQ/c4RjoQzipxRD2W5g21cOqQulZ7rHwQ==}
     dependencies:
-      follow-redirects: 1.15.2_debug@4.3.4
+      follow-redirects: 1.15.2
       form-data: 4.0.0
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
@@ -20365,29 +20401,9 @@ packages:
   /babel-plugin-syntax-jsx/6.18.0:
     resolution: {integrity: sha512-qrPaCSo9c8RHNRHIotaufGbuOBN8rtdC4QrrFFc43vyWCCz7Kl7GL1PGaXtMGQZUXrkCjNEgxDfmAuAabr/rlw==}
 
-  /babel-plugin-transform-typescript-metadata/0.3.2_@babel+core@7.21.3:
+  /babel-plugin-transform-typescript-metadata/0.3.2:
     resolution: {integrity: sha512-mWEvCQTgXQf48yDqgN7CH50waTyYBeP2Lpqx4nNWab9sxEpdXVeKgfj1qYI2/TgUPQtNFZ85i3PemRtnXVYYJg==}
-    peerDependencies:
-      '@babel/core': ^7
-      '@babel/traverse': ^7
-    peerDependenciesMeta:
-      '@babel/traverse':
-        optional: true
     dependencies:
-      '@babel/core': 7.21.3
-      '@babel/helper-plugin-utils': 7.20.2
-    dev: true
-
-  /babel-plugin-transform-typescript-metadata/0.3.2_@babel+core@7.22.19:
-    resolution: {integrity: sha512-mWEvCQTgXQf48yDqgN7CH50waTyYBeP2Lpqx4nNWab9sxEpdXVeKgfj1qYI2/TgUPQtNFZ85i3PemRtnXVYYJg==}
-    peerDependencies:
-      '@babel/core': ^7
-      '@babel/traverse': ^7
-    peerDependenciesMeta:
-      '@babel/traverse':
-        optional: true
-    dependencies:
-      '@babel/core': 7.22.19
       '@babel/helper-plugin-utils': 7.20.2
     dev: true
 
@@ -22912,6 +22928,17 @@ packages:
       whatwg-mimetype: 3.0.0
       whatwg-url: 11.0.0
     dev: true
+
+  /datadog-metrics/0.11.1:
+    resolution: {integrity: sha512-Yae6Zv588nKwqyt6bsUKKUc8VryDTxIfRVoJP6Kpnm17Vqg1I3MVW/tP20RZyNB7tBewYwCpbOYpgRejEzsSzg==}
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      '@datadog/datadog-api-client': 1.18.0
+      debug: 4.3.4
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+    dev: false
 
   /date-fns/2.29.3:
     resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
@@ -25597,18 +25624,6 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
-
-  /follow-redirects/1.15.2_debug@4.3.4:
-    resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
-    engines: {node: '>=4.0'}
-    peerDependencies:
-      debug: '*'
-    peerDependenciesMeta:
-      debug:
-        optional: true
-    dependencies:
-      debug: 4.3.4
-    dev: true
 
   /fontkit/2.0.2:
     resolution: {integrity: sha512-jc4k5Yr8iov8QfS6u8w2CnHWVmbOGtdBtOXMze5Y+QD966Rx6PEVWXSEGwXlsDlKtu1G12cJjcsybnqhSk/+LA==}
@@ -28577,8 +28592,8 @@ packages:
       detect-newline: 3.1.0
     dev: true
 
-  /jest-docblock/29.4.3:
-    resolution: {integrity: sha512-fzdTftThczeSD9nZ3fzA/4KkHtnmllawWrXO69vtI+L9WjEIuXWs4AmyME7lN5hU7dB0sHhuPfcKofRsUb/2Fg==}
+  /jest-docblock/29.7.0:
+    resolution: {integrity: sha512-q617Auw3A612guyaFgsbFeYpNP5t2aoUNLwBUbc/0kD1R4t9ixDbyFTHd1nok4epoVFpr7PmeWHrhvuV3XaJ4g==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       detect-newline: 3.1.0
@@ -28999,7 +29014,7 @@ packages:
       chalk: 4.1.2
       emittery: 0.13.1
       graceful-fs: 4.2.10
-      jest-docblock: 29.4.3
+      jest-docblock: 29.7.0
       jest-environment-node: 29.5.0
       jest-haste-map: 29.5.0
       jest-leak-detector: 29.5.0
@@ -30295,6 +30310,11 @@ packages:
       cli-cursor: 3.1.0
       slice-ansi: 4.0.0
       wrap-ansi: 6.2.0
+    dev: false
+
+  /loglevel/1.8.1:
+    resolution: {integrity: sha512-tCRIJM51SHjAayKwC+QAg8hT8vg6z7GSgLJKGvzuPb1Wc+hLzqtuVLxp6/HzSPOozuK+8ErAhy7U/sVzw8Dgfg==}
+    engines: {node: '>= 0.6.0'}
     dev: false
 
   /long/4.0.0:
@@ -33096,6 +33116,10 @@ packages:
 
   /pako/1.0.11:
     resolution: {integrity: sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==}
+
+  /pako/2.1.0:
+    resolution: {integrity: sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug==}
+    dev: false
 
   /papaparse/5.4.1:
     resolution: {integrity: sha512-HipMsgJkZu8br23pW15uvo6sib6wne/4woLZPlFf3rpDyMe9ywEXUsuD7+6K9PRkJlVT51j/sCOYDKGGS3ZJrw==}

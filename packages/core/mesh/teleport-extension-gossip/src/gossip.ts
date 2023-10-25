@@ -111,6 +111,8 @@ export class Gossip {
         .catch(async (err) => {
           if (err instanceof RpcClosedError) {
             log('sendAnnounce failed because of RpcClosedError', { err });
+          } else if (err instanceof TimeoutError) {
+            log('sendAnnounce failed because of TimeoutError', { err });
           } else {
             log.catch(err);
           }

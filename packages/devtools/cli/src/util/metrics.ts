@@ -149,7 +149,7 @@ export const initClientMetrics = (ctx: Context, agent: Agent) => {
         totalWriteBufferSize += conn.writeBufferSize ?? 0;
 
         for (const stream of conn.streams ?? []) {
-          totalChannelBufferSize += stream.bufferSize ?? 0;
+          totalChannelBufferSize += stream.writeBufferSize ?? 0;
         }
       }
     }

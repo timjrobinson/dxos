@@ -87,6 +87,9 @@
         },
         {
           "env": "SENTRY_RELEASE_AUTH_TOKEN"
+        },
+        {
+          "env": "LOG_FILTER"
         }
       ],
       "dependsOn": [

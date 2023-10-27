@@ -53,5 +53,6 @@
   "implicitDependencies": [
     "log-hook",
     "test"
-  ]
+  ],
+  "name": "toolbox"
 }

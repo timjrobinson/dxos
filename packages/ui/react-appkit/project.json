@@ -48,7 +48,7 @@
         "script": "prebuild"
       },
       "outputs": [
-        "packages/ui/react-appkit/src/proto/gen"
+        "{projectRoot}/src/proto/gen"
       ]
     },
     "storybook": {
@@ -64,7 +64,9 @@
       }
     }
   },
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "implicitDependencies": [
     "esbuild"
-  ]
+  ],
+  "name": "react-appkit"
 }

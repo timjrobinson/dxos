@@ -56,8 +56,8 @@
         "script": "prerelease"
       },
       "outputs": [
-        "docs/docs",
-        "docs/docs/.vuepress/dist"
+        "{projectRoot}/docs",
+        "{projectRoot}/docs/.vuepress/dist"
       ]
     },
     "serve": {
@@ -86,5 +86,5 @@
     }
   },
   "$schema": "../node_modules/nx/schemas/project-schema.json",
-  "root": "docs"
+  "name": "docs"
 }

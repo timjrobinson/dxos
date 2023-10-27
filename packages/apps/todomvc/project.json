@@ -68,7 +68,7 @@
         "script": "prebuild"
       },
       "outputs": [
-        "packages/apps/todomvc/src/proto/gen"
+        "{projectRoot}/src/proto/gen"
       ]
     },
     "preview": {
@@ -88,7 +88,9 @@
       "executor": "@dxos/serve-with-vault:run"
     }
   },
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "implicitDependencies": [
     "serve-with-vault"
-  ]
+  ],
+  "name": "todomvc"
 }

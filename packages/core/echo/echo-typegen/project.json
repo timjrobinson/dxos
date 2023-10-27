@@ -61,5 +61,7 @@
         "{options.resultsPath}"
       ]
     }
-  }
+  },
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "name": "echo-typegen"
 }

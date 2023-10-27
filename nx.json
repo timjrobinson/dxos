@@ -1,44 +1,11 @@
 {
-  // https://nx.dev/reference/nx-json
   "extends": "nx/presets/npm.json",
-  "npmScope": "dxos",
   "affected": {
     "defaultBase": "main"
   },
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx-cloud",
-      "options": {
-        "cacheableOperations": [
-          "build",
-          "bundle",
-          "compile",
-          "compile-lib",
-          "compile-node",
-          "e2e",
-          "lint",
-          "prebuild",
-          "prerelease",
-          "storybook-build",
-          "test"
-        ],
-        "parallel": 6,
-        "accessToken": "ZGVlNTQ0ODctNGI4ZS00MTc0LTljZDQtMzFlMzJkOTViMmQyfHJlYWQtd3JpdGU="
-      }
-    }
-  },
-  // Named inputs explained here: https://nx.dev/more-concepts/customizing-inputs
   "namedInputs": {
-    "default": [
-      "{projectRoot}/**/*",
-      "sharedGlobals"
-    ],
-    // Nx assumes the use of tsconfig.base.json.
-    // https://nx.dev/more-concepts/customizing-inputs#global-settings.
-    "sharedGlobals": [
-      "{workspaceRoot}/tsconfig.json",
-      "{workspaceRoot}/.eslintrc*.js"
-    ],
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "sharedGlobals": ["{workspaceRoot}/tsconfig.json", "{workspaceRoot}/.eslintrc*.js"],
     "production": [
       "default",
       "!{projectRoot}/**/*.spec.ts",
@@ -51,11 +18,8 @@
   "targetDefaults": {
     "build": {
       "inputs": ["production", "^production"],
-      "dependsOn": [
-        "^build",
-        "prebuild",
-        "compile"
-      ]
+      "dependsOn": ["^build", "prebuild", "compile"],
+      "cache": true
     },
     "bundle": {
       "inputs": [
@@ -89,25 +53,17 @@
           "env": "SENTRY_RELEASE_AUTH_TOKEN"
         }
       ],
-      "dependsOn": [
-        // TODO(wittjosiah): This might be able to be ^compile to speed up deploys.
-        //   Some experimental/deprecated projects still depend on build for transpiling.
-        "^build",
-        "prebuild"
-      ]
+      "dependsOn": ["^build", "prebuild"],
+      "cache": true
     },
     "chromatic": {
       "inputs": ["production", "^production"],
-      "dependsOn": [
-        "storybook-build"
-      ]
+      "dependsOn": ["storybook-build"]
     },
     "compile": {
       "inputs": ["production", "^production"],
-      "dependsOn": [
-        "^compile",
-        "prebuild"
-      ]
+      "dependsOn": ["^compile", "prebuild"],
+      "cache": true
     },
     "e2e": {
       "inputs": [
@@ -123,56 +79,42 @@
           "env": "LOG_PROCESSOR"
         }
       ],
-      "dependsOn": [
-        "prebuild",
-        "^compile"
-      ]
+      "dependsOn": ["prebuild", "^compile"],
+      "cache": true
     },
     "lint": {
-      "inputs": ["default"]
+      "inputs": ["default"],
+      "cache": true
     },
     "prebuild": {
       "inputs": ["production", "^production"],
-      "dependsOn": [
-        "^compile"
-      ]
+      "dependsOn": ["^compile"],
+      "cache": true
     },
     "prerelease": {
       "inputs": ["default", "^production"],
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"],
+      "cache": true
     },
     "preview": {
       "inputs": ["production", "^production"]
     },
     "serve": {
       "inputs": ["production", "^production"],
-      "dependsOn": [
-        "^compile",
-        "prebuild"
-      ]
+      "dependsOn": ["^compile", "prebuild"]
     },
     "serve-with-vault": {
       "inputs": ["production", "^production"],
-      "dependsOn": [
-        "^compile",
-        "prebuild"
-      ]
+      "dependsOn": ["^compile", "prebuild"]
     },
     "storybook": {
       "inputs": ["production", "^production"],
-      "dependsOn": [
-        "^compile",
-        "prebuild"
-      ]
+      "dependsOn": ["^compile", "prebuild"]
     },
     "storybook-build": {
       "inputs": ["production", "^production"],
-      "dependsOn": [
-        "^compile",
-        "prebuild"
-      ]
+      "dependsOn": ["^compile", "prebuild"],
+      "cache": true
     },
     "test": {
       "inputs": [
@@ -188,10 +130,16 @@
           "env": "LOG_PROCESSOR"
         }
       ],
-      "dependsOn": [
-        "prebuild",
-        "^compile"
-      ]
+      "dependsOn": ["prebuild", "^compile"],
+      "cache": true
+    },
+    "compile-lib": {
+      "cache": true
+    },
+    "compile-node": {
+      "cache": true
     }
-  }
+  },
+  "nxCloudAccessToken": "ZGVlNTQ0ODctNGI4ZS00MTc0LTljZDQtMzFlMzJkOTViMmQyfHJlYWQtd3JpdGU=",
+  "parallel": 6
 }

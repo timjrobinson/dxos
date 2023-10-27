@@ -55,7 +55,9 @@
       "executor": "@dxos/serve-with-vault:run"
     }
   },
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "implicitDependencies": [
     "serve-with-vault"
-  ]
+  ],
+  "name": "labs-app"
 }

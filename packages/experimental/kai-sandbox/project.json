@@ -44,12 +44,14 @@
         "script": "prebuild"
       },
       "outputs": [
-        "packages/experimental/kai-sandbox/src/proto/gen"
+        "{projectRoot}/src/proto/gen"
       ]
     }
   },
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "implicitDependencies": [
     "esbuild",
     "test"
-  ]
+  ],
+  "name": "kai-sandbox"
 }

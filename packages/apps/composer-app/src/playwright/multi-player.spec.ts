@@ -26,8 +26,8 @@ test.describe('Basic test', () => {
     test.skip(browserName === 'firefox');
     test.skip(browserName === 'webkit' && platform() !== 'darwin');
 
-    host = new AppManager(browser, true);
-    guest = new AppManager(browser, true);
+    host = new AppManager(browser, false);
+    guest = new AppManager(browser, false);
 
     await host.init();
     await guest.init();

@@ -82,6 +82,7 @@ export class GossipExtension implements TeleportExtension {
     }
     await this._opened.wait();
     invariant(this._rpc, 'RPC not initialized');
+    log('gossip message', { message });
     await this._rpc.rpc.GossipService.announce(message);
   }
 }

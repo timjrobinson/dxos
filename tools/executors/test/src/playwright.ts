@@ -16,6 +16,7 @@ import { v4 } from 'uuid';
 import { getBrowser } from './browser';
 import { type BrowserType, type MobileType } from './types';
 import { Lock } from './util';
+import { log } from 'console';
 
 export type { BrowserType } from './types';
 
@@ -44,6 +45,7 @@ export const getPersistentContext = (browserType: BrowserType) => {
 
 export const setupPage = async (browser: Browser | BrowserContext, options: SetupOptions) => {
   const executorResult = JSON.parse(process.env.EXECUTOR_RESULT ?? '{}');
+  console.log(executorResult);
   const { url = executorResult.baseUrl, waitFor, bridgeLogs } = options;
 
   const context = 'newContext' in browser ? await browser.newContext() : browser;
@@ -75,6 +77,7 @@ export const setupPage = async (browser: Browser | BrowserContext, options: Setu
       }
     });
   }
+  console.log(`going to: ${url}`);
 
   if (url) {
     await page.goto(url);

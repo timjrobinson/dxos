@@ -12,7 +12,6 @@ import { createWorkerPort } from '@dxos/rpc-tunnel';
 import { namespace } from './util';
 
 // TODO(burdon): Make configurable (NOTE: levels lower than info affect performance).
-const LOG_FILTER = 'network-manager:debug,teleport:debug,echo-pipeline:debug,messaging:debug';
 const LOG_FILTER = 'sworker:debug,network-manager:debug,teleport:debug,echo-pipeline:debug,info';
 
 void initializeAppTelemetry({

@@ -3,6 +3,7 @@
 // Copyright 2020 DXOS.org
 //
 
+import debug from 'debug';
 import SimplePeerConstructor, { type Instance as SimplePeer } from 'simple-peer';
 import invariant from 'tiny-invariant';
 
@@ -22,6 +23,8 @@ export type SimplePeerTransportParams = {
   webrtcConfig?: any;
   sendSignal: (signal: Signal) => Promise<void>;
 };
+
+debug.enable('simple-peer*');
 
 /**
  * Implements Transport for WebRTC. Uses simple-peer under the hood.

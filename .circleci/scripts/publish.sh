@@ -37,7 +37,7 @@ function notifyFailure() {
 
 function notifyStart() {
   if [ -z "$DX_DISCORD_WEBHOOK_URL" ]; then return; fi
-  MESSAGE='{ "embeds": [{ "title": "Deploy started", "description": "Environment: '$DX_ENVIRONMENT'", "color": '$YELLOW' }] }'
+  MESSAGE='{ "embeds": [{ "title": "Deploy started", "description": "Environment: '$BRANCH'", "color": '$YELLOW' }] }'
   curl -H "Content-Type: application/json" -d "${MESSAGE}" $DX_DISCORD_WEBHOOK_URL
 }
 

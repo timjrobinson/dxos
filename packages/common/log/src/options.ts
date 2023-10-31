@@ -23,6 +23,8 @@ const IS_BROWSER = typeof window !== 'undefined' || typeof navigator !== 'undefi
 export const DEFAULT_PROCESSORS = [IS_BROWSER ? BROWSER_PROCESSOR : CONSOLE_PROCESSOR];
 
 export const parseFilter = (filter: string | string[] | LogLevel): LogFilter[] => {
+  // debugger;
+  console.log('parseFilter', { filter });
   if (typeof filter === 'number') {
     return [{ level: filter }];
   }
@@ -55,8 +57,13 @@ export const getConfig = (options?: LogOptions): LogConfig => {
 
   return {
     options: mergedOptions,
-    filters: parseFilter(mergedOptions.filter ?? LogLevel.INFO),
-    captureFilters: parseFilter(mergedOptions.captureFilter ?? LogLevel.WARN),
+    filters: parseFilter(
+      mergedOptions.filter ?? 'defaultparsefilter:debug,network-manager:debug,teleport:debug,echo-pipeline:debug,info',
+    ),
+    captureFilters: parseFilter(
+      mergedOptions.captureFilter ??
+        'defaultcapturefilter:debug,network-manager:debug,teleport:debug,echo-pipeline:debug,info',
+    ),
     processors: mergedOptions.processor ? [processors[mergedOptions.processor]] : DEFAULT_PROCESSORS,
     prefix: mergedOptions.prefix,
   };

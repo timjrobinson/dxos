@@ -38,8 +38,8 @@ export const fromIFrame = async (
       timeout: options.timeout,
     });
   }
-
-  return new IFrameClientServicesProxy({ source, ...options });
+  log.error('creating client services', { config, source, options });
+  return new IFrameClientServicesProxy({ source, logFilter: config.get('runtime.client.log.filter'), ...options });
 };
 
 /**

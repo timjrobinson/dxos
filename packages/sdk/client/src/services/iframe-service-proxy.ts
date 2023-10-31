@@ -69,6 +69,8 @@ export class IFrameClientServicesProxy implements ClientServicesProvider {
     this._source = source;
     this._shell = shell;
     this._vault = vault;
+    // debugger;
+    log.error('logFilter', { logFilter });
     this._logFilter = parseFilter(logFilter);
     this._timeout = timeout;
 

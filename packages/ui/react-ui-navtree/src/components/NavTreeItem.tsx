@@ -33,7 +33,7 @@ const NavTreeBranch = ({ path, nodes, level }: { path: string; nodes: TreeNode[]
 
   return (
     <TreeItemComponent.Body>
-      <Mosaic.SortableContext id={path} items={items} direction='vertical'>
+      <Mosaic.SortableContext id={path} items={items} strategy={() => null}>
         <Tree.Branch>
           {items.map((node, index) => (
             <Mosaic.SortableTile

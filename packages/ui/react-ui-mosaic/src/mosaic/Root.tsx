@@ -82,7 +82,6 @@ export const MosaicRoot: FC<MosaicRootProps> = ({ Component = DefaultComponent, 
    * See: https://docs.dndkit.com/api-documentation/context-provider/collision-detection-algorithms#custom-collision-detection-algorithms
    * See: https://github.com/clauderic/dnd-kit/tree/master/packages/core/src/utilities/algorithms
    */
-  // TODO(burdon): Flickering: should not change while animation is happening.
   const collisionDetection: CollisionDetection = (args) => {
     // pointerWithin is the most accurate (since we're using drag handles), but only works with pointer sensors.
     const pointerCollisions = pointerWithin(args);
@@ -156,16 +155,14 @@ export const MosaicRoot: FC<MosaicRootProps> = ({ Component = DefaultComponent, 
     }
 
     const onOver = ({ active, over }: MosaicMoveEvent) => {
-      if (Path.parent(active.path) === Path.parent(over.path)) {
-        return 'rearrange';
-      } else if (overContainer.onOver) {
-        return overContainer.onOver({ active, over });
+      if (overContainer.onOver) {
+        return overContainer.onOver({ ...event, active, over });
       } else {
         return 'reject';
       }
     };
 
-    setOperation(onOver({ active: activeItem, over: overItem }));
+    setOperation(onOver({ ...event, active: activeItem, over: overItem }));
     setOverItem(overItem);
   };
 
@@ -186,10 +183,10 @@ export const MosaicRoot: FC<MosaicRootProps> = ({ Component = DefaultComponent, 
     ) {
       const activeContainer = containers[Path.first(activeItem.path)];
       if (activeContainer) {
-        activeContainer.onDrop?.({ operation, active: activeItem, over: overItem });
+        activeContainer.onDrop?.({ ...event, operation, active: activeItem, over: overItem });
 
         if (overContainer && overContainer !== activeContainer) {
-          overContainer.onDrop?.({ operation, active: activeItem, over: overItem });
+          overContainer.onDrop?.({ ...event, operation, active: activeItem, over: overItem });
         }
       }
     }

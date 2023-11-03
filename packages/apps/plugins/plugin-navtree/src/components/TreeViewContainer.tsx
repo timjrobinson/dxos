@@ -77,7 +77,8 @@ export const TreeViewContainer = ({
   };
 
   const handleOver = useCallback(
-    ({ active, over }: MosaicMoveEvent<number>) => {
+    ({ active, over, delta, collisions }: MosaicMoveEvent<number>) => {
+      console.log('[tree view over]', delta, collisions);
       // Reject all operations that don’t match the graph’s root id
       if (Path.first(active.path) !== graph.root.id || Path.first(over.path) !== Path.first(active.path)) {
         return 'reject';

@@ -16,7 +16,7 @@ const NavTreeImpl = ({ node }: { node: TreeNode }) => {
   const { id, Component } = useContainer();
 
   return (
-    <Mosaic.SortableContext id={id} items={node.children} direction='vertical'>
+    <Mosaic.SortableContext id={id} items={node.children} direction='vertical' strategy={() => null}>
       {node.children.map((node, index) => (
         <Mosaic.SortableTile
           key={node.id}

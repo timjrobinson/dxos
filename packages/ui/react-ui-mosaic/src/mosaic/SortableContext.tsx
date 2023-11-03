@@ -2,7 +2,12 @@
 // Copyright 2023 DXOS.org
 //
 
-import { SortableContext, horizontalListSortingStrategy, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import {
+  SortableContext,
+  horizontalListSortingStrategy,
+  verticalListSortingStrategy,
+  type SortableContextProps,
+} from '@dnd-kit/sortable';
 import React, { type PropsWithChildren } from 'react';
 
 import { useContainer, useMosaic } from './hooks';
@@ -11,18 +16,26 @@ import { Path } from './util';
 
 type Direction = 'horizontal' | 'vertical';
 
-export type MosaicSortableProps<TData extends MosaicDataItem = MosaicDataItem> = PropsWithChildren<{
-  id?: string;
-  items?: TData[];
-  direction?: Direction;
-}>;
+export type MosaicSortableProps<TData extends MosaicDataItem = MosaicDataItem> = PropsWithChildren<
+  {
+    id?: string;
+    items?: TData[];
+    direction?: Direction;
+  } & Pick<SortableContextProps, 'strategy'>
+>;
 
 /**
  * Mosaic convenience wrapper for dnd-kit SortableContext.
  */
 // TODO(burdon): Remove since just obfuscates SortableContext unless more deeply integrated with useSortableItem.
 //  Otherwise accept same props as SortableContext (e.g., verticalListSortingStrategy).
-export const MosaicSortableContext = ({ id, items = [], direction = 'vertical', children }: MosaicSortableProps) => {
+export const MosaicSortableContext = ({
+  id,
+  items = [],
+  direction = 'vertical',
+  strategy,
+  children,
+}: MosaicSortableProps) => {
   const { operation, activeItem, overItem } = useMosaic();
   const container = useContainer();
   const contextId = id ?? container.id;
@@ -40,7 +53,11 @@ export const MosaicSortableContext = ({ id, items = [], direction = 'vertical', 
     return isPreview ? activeItem.path : path;
   });
 
-  return (
+  return strategy ? (
+    <SortableContext items={items} id={id} strategy={strategy}>
+      {children}
+    </SortableContext>
+  ) : (
     <Sortable id={contextId} items={ids}>
       {children}
     </Sortable>

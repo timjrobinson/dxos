@@ -2,7 +2,7 @@
 // Copyright 2023 DXOS.org
 //
 
-import { type Modifier } from '@dnd-kit/core';
+import { type Modifier, type DragMoveEvent } from '@dnd-kit/core';
 import React, {
   createContext,
   useEffect,
@@ -33,7 +33,7 @@ export type MosaicTileOverlayProps = {
 // TODO(wittjosiah): Add 'delete'. Consider adding 'swap'.
 export type MosaicOperation = 'transfer' | 'copy' | 'rearrange' | 'reject';
 
-export type MosaicMoveEvent<TPosition = unknown> = {
+export type MosaicMoveEvent<TPosition = unknown> = Omit<DragMoveEvent, 'active' | 'over'> & {
   active: MosaicDraggedItem<TPosition>;
   over: MosaicDraggedItem<TPosition>;
 };

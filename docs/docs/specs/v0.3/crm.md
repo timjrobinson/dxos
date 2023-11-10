@@ -2,10 +2,44 @@
 
 ## Background
 
-Customer relationship management (CRM) is a set of integrated, data-driven software solutions that help manage, track, and store information related to your company’s current and potential customers. By keeping this information in a centralized system, business teams have access to the insights they need, the moment they need them. [https://dynamics.microsoft.com/en-us/crm/what-is-crm]
+Customer relationship management (CRM) is about tracking customer conversations and relationships such that a team of people can efficiently process those customers through a workflow or a sequence of lifecycle stages.
 
+Many CRM solutions exist out there, including ones integrated into Microsoft Office, Tencent WeChat, and Salesforce, but they are mostly expensive, centralized, and closed-source. 
+
+We think there is further value unlocked when the CRM implementation integrates tightly with other essential KW scenarios in the same app such as:
+  - internal and external chat and messaging
+  - recruiting pipeline management
+  - document authoring and content management
+  - product support and feedback systems
+  - custom automations possible through the extensibility model we provide
 
 ## User Stories
+
+These are unique, cross-app scenarios we aim to differentiate with:
+
+### 1. Rich Mentions in Chat
+
+An entity from the CRM or recruiting pipeline can be mentioned by name in internal team chat. 
+  - Their name becomes a simple link to the record which can be navigated
+  - Their name pops an overlay or unfurls into an inline info card to help avoid context switching
+  - The "interactions" listing is automatically updated with every internal mention of the customer
+  - Unfurled cards about customer relationships can have context-aware actions on them:
+    - send an email
+    - send a discord message
+    - open last conversation thread
+    - move record to a different state/status/stage
+
+### 2. Creating CRM records from Chat
+
+Any names or contact information along with relevant context can be extracted from a message (or group of selected messages) which were dragged from a chat conversation into the appropriate "customers" table or "state" column in a kanban view of the table. This creates (or merges with) any necessary entries in the customers table and adds the relevant context as interaction records.
+
+### 3. Creating CRM records from GitHub contacts
+
+Any github contributors visualized in the Composer UI can be dragged into the relevant customers folder, or relevant state in a kanban view of the customers table, which creates (or merges with) relevant records, metadata, and interactions in the CRM.
+
+
+
+---
 
 - Users can create Spaces containing multiple Tables that display records of a given Schema.
 - Objects associated with a given Schema can be created, viewed, and manipulated by Tables and Kanban.

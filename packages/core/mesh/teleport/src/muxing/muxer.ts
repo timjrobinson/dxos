@@ -345,7 +345,7 @@ export class Muxer {
     if (cmd.close) {
       if (!this._closing) {
         log('received peer close, initiating my own graceful close');
-        await this.close();
+        await this.close(new Error('received peer close'));
       } else {
         log('received close from peer, already closing');
       }

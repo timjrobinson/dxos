@@ -135,9 +135,12 @@ export class WebsocketSignalManager implements SignalManager {
     void this._forEachServer(async (server, serverName) => {
       void server.sendMessage({ author, recipient, payload }).catch((err) => {
         if (err instanceof RateLimitExceededError) {
-          log('WSS rate limit exceeded', { err });
+          log.info('WSS rate limit exceeded', { err });
+        } else if (err instanceof TimeoutError || err.constructor.name === 'TimeoutError') {
+          log.info('WSS sendMessage timeout', { err });
+          void this.checkServerFailure(serverName);
         } else {
-          log(`error sending to ${serverName}`, { err });
+          log.info(`error sending to ${serverName}`, { err });
           void this.checkServerFailure(serverName);
         }
       });

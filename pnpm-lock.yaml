@@ -3278,6 +3278,36 @@ importers:
         specifier: ^0.12.4
         version: 0.12.5
 
+  packages/common/observability:
+    dependencies:
+      '@dxos/async':
+        specifier: workspace:*
+        version: link:../async
+      '@dxos/config':
+        specifier: workspace:*
+        version: link:../../sdk/config
+      '@dxos/context':
+        specifier: workspace:*
+        version: link:../context
+      '@dxos/debug':
+        specifier: workspace:*
+        version: link:../debug
+      '@dxos/invariant':
+        specifier: workspace:*
+        version: link:../invariant
+      '@dxos/log':
+        specifier: workspace:*
+        version: link:../log
+      '@dxos/node-std':
+        specifier: workspace:*
+        version: link:../node-std
+      '@dxos/util':
+        specifier: workspace:*
+        version: link:../util
+      datadog-metrics:
+        specifier: ^0.11.1
+        version: 0.11.1
+
   packages/common/phoenix:
     dependencies:
       '@dxos/async':
@@ -3619,6 +3649,9 @@ importers:
       '@dxos/log':
         specifier: workspace:*
         version: link:../log
+      '@dxos/observability':
+        specifier: workspace:*
+        version: link:../observability
       '@dxos/sentry':
         specifier: workspace:*
         version: link:../sentry
@@ -4996,6 +5029,12 @@ importers:
       '@dxos/log':
         specifier: workspace:*
         version: link:../../common/log
+      '@dxos/network-manager':
+        specifier: workspace:*
+        version: link:../../core/mesh/network-manager
+      '@dxos/observability':
+        specifier: workspace:*
+        version: link:../../common/observability
       '@dxos/plate':
         specifier: workspace:*
         version: link:../../common/plate
@@ -11925,6 +11964,24 @@ packages:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
+  /@datadog/datadog-api-client@1.19.0:
+    resolution: {integrity: sha512-tMkHo7nBFtpDP4dbT/dGIIdittGaTuA6hIY6v4vWb/f+NlJPwnJUf/gBJ9Hwz1HEmlYQMuAnpdFxIQ2P6zjujA==}
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      '@types/buffer-from': 1.1.2
+      '@types/node': 18.18.8
+      '@types/pako': 1.0.7
+      buffer-from: 1.1.2
+      cross-fetch: 3.1.5
+      es6-promise: 4.2.8
+      form-data: 4.0.0
+      loglevel: 1.8.1
+      pako: 2.1.0
+      url-parse: 1.5.10
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@devicefarmer/adbkit-logcat@2.1.3:
     resolution: {integrity: sha512-yeaGFjNBc/6+svbDeul1tNHtNChw6h8pSHAt5D+JsedUrMTN7tla7B15WLDyekxsuS2XlZHRxpuC6m92wiwCNw==}
     engines: {node: '>= 4'}
@@ -13204,7 +13261,7 @@ packages:
     dependencies:
       '@jest/fake-timers': 28.1.3
       '@jest/types': 28.1.3
-      '@types/node': 18.11.9
+      '@types/node': 18.18.8
       jest-mock: 28.1.3
     dev: true
 
@@ -13214,7 +13271,7 @@ packages:
     dependencies:
       '@jest/fake-timers': 29.5.0
       '@jest/types': 29.5.0
-      '@types/node': 18.11.9
+      '@types/node': 18.18.8
       jest-mock: 29.5.0
     dev: true
 
@@ -13258,7 +13315,7 @@ packages:
     dependencies:
       '@jest/types': 28.1.3
       '@sinonjs/fake-timers': 9.1.2
-      '@types/node': 18.11.9
+      '@types/node': 18.18.8
       jest-message-util: 28.1.3
       jest-mock: 28.1.3
       jest-util: 28.1.3
@@ -13270,7 +13327,7 @@ packages:
     dependencies:
       '@jest/types': 29.5.0
       '@sinonjs/fake-timers': 10.2.0
-      '@types/node': 18.11.9
+      '@types/node': 18.18.8
       jest-message-util: 29.5.0
       jest-mock: 29.5.0
       jest-util: 29.5.0
@@ -19806,6 +19863,12 @@ packages:
     resolution: {integrity: sha512-wJsiX1tosQ+J5+bY5LrSahHxr2wT+uME5UDwdN1kg4frt40euqA+wzECkmq4t5QbveHiJepfdThgQrPw6KiSlg==}
     dev: false
 
+  /@types/buffer-from@1.1.2:
+    resolution: {integrity: sha512-2BV9Fa0T8sxJduOeO9mVpFMyE9rcMXbDNXzmPko6NJUMVA6aPZWVOdnXhN7tJnDB8ld5VMDN4UqZInxURXcS0g==}
+    dependencies:
+      '@types/node': 18.18.8
+    dev: false
+
   /@types/bytes@3.1.1:
     resolution: {integrity: sha512-lOGyCnw+2JVPKU3wIV0srU0NyALwTBJlVSx5DfMQOFuuohA8y9S8orImpuIQikZ0uIQ8gehrRjxgQC1rLRi11w==}
     dev: false
@@ -20305,7 +20368,7 @@ packages:
   /@types/jsonwebtoken@9.0.1:
     resolution: {integrity: sha512-c5ltxazpWabia/4UzhIoaDcIza4KViOQhdbjRlfcIGVnsE3c3brkz9Z+F/EeJIECOQP7W7US2hNE930cWWkPiw==}
     dependencies:
-      '@types/node': 18.11.9
+      '@types/node': 18.18.8
     dev: false
 
   /@types/katex@0.16.0:
@@ -20593,7 +20656,6 @@ packages:
     resolution: {integrity: sha512-OLGBaaK5V3VRBS1bAkMVP2/W9B+H8meUfl866OrMNQqt7wDgdpWPp5o6gmIc9pB+lIQHSq4ZL8ypeH1vPxcPaQ==}
     dependencies:
       undici-types: 5.26.5
-    dev: false
 
   /@types/normalize-package-data@2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
@@ -20612,6 +20674,10 @@ packages:
 
   /@types/offscreencanvas@2019.3.0:
     resolution: {integrity: sha512-esIJx9bQg+QYF0ra8GnvfianIY8qWB0GBx54PK5Eps6m+xTj86KLavHv6qDhzKcu5UUOgNfJ2pWaIIV7TRUd9Q==}
+    dev: false
+
+  /@types/pako@1.0.7:
+    resolution: {integrity: sha512-YBtzT2ztNF6R/9+UXj2wTGFnC9NklAnASt3sC0h2m1bbH7G6FyBIkt4AN8ThZpNfxUo1b2iMVO0UawiJymEt8A==}
     dev: false
 
   /@types/parse-json@4.0.0:
@@ -20898,7 +20964,7 @@ packages:
     resolution: {integrity: sha512-ayJ0iOCDNHnKpKTgBG6Q6JOnHTj9zFta+3j2b8Ejza0e4cvRyMn0ZoLEmbPrTHe5YYRlDYPvPWVdV4cTaRyH7g==}
     dependencies:
       '@types/expect': 1.20.4
-      '@types/node': 18.11.9
+      '@types/node': 18.18.8
     dev: true
 
   /@types/web-bluetooth@0.0.16:
@@ -20957,7 +21023,7 @@ packages:
     resolution: {integrity: sha512-Cn6WYCm0tXv8p6k+A8PvbDG763EDpBoTzHdA+Q/MF6H3sapGjCm9NzoaJncJS9tUKSuCoDs9XHxYYsQDgxR6kw==}
     requiresBuild: true
     dependencies:
-      '@types/node': 18.11.9
+      '@types/node': 18.18.8
     dev: true
 
   /@types/yoga-layout@1.9.2:
@@ -25599,6 +25665,17 @@ packages:
       abab: 2.0.6
       whatwg-mimetype: 3.0.0
       whatwg-url: 11.0.0
+
+  /datadog-metrics@0.11.1:
+    resolution: {integrity: sha512-Yae6Zv588nKwqyt6bsUKKUc8VryDTxIfRVoJP6Kpnm17Vqg1I3MVW/tP20RZyNB7tBewYwCpbOYpgRejEzsSzg==}
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      '@datadog/datadog-api-client': 1.19.0
+      debug: 4.3.4(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+    dev: false
 
   /date-fns@2.29.3:
     resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
@@ -30955,7 +31032,7 @@ packages:
       '@jest/expect': 28.1.3
       '@jest/test-result': 28.1.3
       '@jest/types': 28.1.3
-      '@types/node': 18.11.9
+      '@types/node': 18.18.8
       chalk: 4.1.2
       co: 4.6.0
       dedent: 0.7.0
@@ -31193,7 +31270,7 @@ packages:
       '@jest/environment': 28.1.3
       '@jest/fake-timers': 28.1.3
       '@jest/types': 28.1.3
-      '@types/node': 18.11.9
+      '@types/node': 18.18.8
       jest-mock: 28.1.3
       jest-util: 28.1.3
     dev: true
@@ -31420,7 +31497,7 @@ packages:
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     dependencies:
       '@jest/types': 28.1.3
-      '@types/node': 18.11.9
+      '@types/node': 18.18.8
     dev: true
 
   /jest-mock@29.5.0:
@@ -31428,7 +31505,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.5.0
-      '@types/node': 18.11.9
+      '@types/node': 18.18.8
       jest-util: 29.5.0
     dev: true
 
@@ -31636,7 +31713,7 @@ packages:
       '@jest/test-result': 29.5.0
       '@jest/transform': 29.5.0
       '@jest/types': 29.5.0
-      '@types/node': 18.11.9
+      '@types/node': 18.18.8
       chalk: 4.1.2
       cjs-module-lexer: 1.2.2
       collect-v8-coverage: 1.0.1
@@ -31829,7 +31906,7 @@ packages:
     dependencies:
       '@jest/test-result': 29.5.0
       '@jest/types': 29.5.0
-      '@types/node': 18.11.9
+      '@types/node': 18.18.8
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.13.1
@@ -31859,7 +31936,7 @@ packages:
     resolution: {integrity: sha512-CqRA220YV/6jCo8VWvAt1KKx6eek1VIHMPeLEbpcfSfkEeWyBNppynM/o6q+Wmw+sOhos2ml34wZbSX3G13//g==}
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     dependencies:
-      '@types/node': 18.11.9
+      '@types/node': 18.18.8
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true
@@ -33137,6 +33214,11 @@ packages:
       cli-cursor: 3.1.0
       slice-ansi: 4.0.0
       wrap-ansi: 6.2.0
+    dev: false
+
+  /loglevel@1.8.1:
+    resolution: {integrity: sha512-tCRIJM51SHjAayKwC+QAg8hT8vg6z7GSgLJKGvzuPb1Wc+hLzqtuVLxp6/HzSPOozuK+8ErAhy7U/sVzw8Dgfg==}
+    engines: {node: '>= 0.6.0'}
     dev: false
 
   /long@4.0.0:
@@ -35961,6 +36043,10 @@ packages:
 
   /pako@1.0.11:
     resolution: {integrity: sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==}
+
+  /pako@2.1.0:
+    resolution: {integrity: sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug==}
+    dev: false
 
   /papaparse@5.4.1:
     resolution: {integrity: sha512-HipMsgJkZu8br23pW15uvo6sib6wne/4woLZPlFf3rpDyMe9ywEXUsuD7+6K9PRkJlVT51j/sCOYDKGGS3ZJrw==}
@@ -41222,7 +41308,6 @@ packages:
 
   /undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
-    dev: false
 
   /unfetch@4.2.0:
     resolution: {integrity: sha512-F9p7yYCn6cIW9El1zi0HI6vqpeIvBsr3dSuRO6Xuppb1u5rXpCPmMvLSyECLhybr9isec8Ohl0hPekMVrEinDA==}

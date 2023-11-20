@@ -9,12 +9,12 @@ prev: ../getting-started
 
 ECHO (The **E**ventually **C**onsistent **H**ierarhical **O**bject store) is a peer-to-peer graph database written in TypeScript.
 
-*   Secure, P2P data replication based on [CRDTs](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type).
-*   No servers or central authority, all the data is with the clients.
-*   Connectivity with peers via [WebRTC](https://en.wikipedia.org/wiki/WebRTC).
-*   Support for multiple concurrent writers.
-*   Collaboration on key-value objects, bodies of text, and other "custom data models".
-*   Support for offline writes and conflict resolution when peers rejoin the network.
+- Secure, P2P data replication based on [CRDTs](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type).
+- No servers or central authority, all the data is with the clients.
+- Connectivity with peers via [WebRTC](https://en.wikipedia.org/wiki/WebRTC).
+- Support for multiple concurrent writers.
+- Collaboration on key-value objects, bodies of text, and other "custom data models".
+- Support for offline writes and conflict resolution when peers rejoin the network.
 
 ::: note Tell us what you think
 Join our [Discord](https://discord.gg/KsDBXuUxvD) and talk to us about the kind of database you are looking for.
@@ -44,8 +44,8 @@ If you're using `react`, DXOS provides a simple [UI flow](../react/spaces#joinin
 
 **Next steps:**
 
-*   Create or join a space in [TypeScript](../typescript/spaces)
-*   Create or join a space in [React](../react/spaces)
+- Create or join a space in [TypeScript](../typescript/spaces)
+- Create or join a space in [React](../react/spaces)
 
 ## Objects
 
@@ -57,13 +57,13 @@ See the [glossary](../glossary) for definitions of other terms you'll find in th
 
 ## How to use ECHO
 
-*   Install the appropriate npm package [`@dxos/client`](../typescript) or [`@dxos/react-client`](../react)
-*   Create a [Client](../typescript#configuration) (or a [ClientProvider](../react#cofiguration) in react)
-*   Set up an identity with [HALO](./halo)
-*   Create or Join a [Space](#spaces)
-*   [Query objects](../typescript/queries) (in [react](../react/queries))
-*   [Create objects](../typescript/mutations#creating-objects) (in [react](../react/mutations))
-*   [Mutate objects](../typescript/mutations) (in [react](../react/mutations))
+- Install the appropriate npm package [`@dxos/client`](../typescript) or [`@dxos/react-client`](../react)
+- Create a [Client](../typescript#configuration) (or a [ClientProvider](../react#cofiguration) in react)
+- Set up an identity with [HALO](./halo)
+- Create or Join a [Space](#spaces)
+- [Query objects](../typescript/queries) (in [react](../react/queries))
+- [Create objects](../typescript/mutations#creating-objects) (in [react](../react/mutations))
+- [Mutate objects](../typescript/mutations) (in [react](../react/mutations))
 
 ## Local Vault Topology
 
@@ -77,7 +77,7 @@ A service worker and the CRDT-based architecture of ECHO enable both offline and
 
 ![HALO Vault Topology Diagram](./images/topology.drawio.svg)
 
-This means that when apps request the user's identity (ask to log in), they are in fact obtaining a secure identifier from the local HALO application directly, without making any network calls. Any reads and writes end up storing data in a database owned by the `halo.dxos.com` application, which serves as an identity wallet and data vault where specific devices or applications can be revoked from accessing user data at any time.
+This means that when apps request the user's identity (ask to log in), they are in fact obtaining a secure identifier from the local HALO application directly, without making any network calls. Any reads and writes end up storing data in a database owned by the `halo.dxos.org` application, which serves as an identity wallet and data vault where specific devices or applications can be revoked from accessing user data at any time.
 
 ::: note
 For Node.js applications, the vault is implemented by an in-process storage engine that persists to files on disk, and is not isolated from the consuming application the way it is in browser.
@@ -89,5 +89,5 @@ The vault relies on worker ES modules and as such is [not yet functional in Fire
 
 ## Next steps
 
-*   If using `react` see the [React guide](../react/)
-*   Otherwise, follow the [TypeScript guide](../typescript/)
+- If using `react` see the [React guide](../react/)
+- Otherwise, follow the [TypeScript guide](../typescript/)

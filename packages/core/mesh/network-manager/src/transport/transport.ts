@@ -4,6 +4,7 @@
 
 import { type Event } from '@dxos/async';
 import { type ErrorStream } from '@dxos/debug';
+import { type PublicKey } from '@dxos/keys';
 import { type Signal } from '@dxos/protocols/proto/dxos/mesh/swarm';
 
 export enum TransportKind {
@@ -43,6 +44,8 @@ export type TransportOptions = {
   sendSignal: (signal: Signal) => Promise<void>; // TODO(burdon): Remove async?
 
   timeout?: number;
+
+  sessionId?: PublicKey;
 };
 
 /**

@@ -9,7 +9,7 @@ import { Context } from '@dxos/context';
 import { failUndefined } from '@dxos/debug';
 import { invariant } from '@dxos/invariant';
 import { PublicKey } from '@dxos/keys';
-import { log } from '@dxos/log';
+import { log, logInfo } from '@dxos/log';
 import { RpcClosedError, TimeoutError } from '@dxos/protocols';
 
 import { ControlExtension } from './control-extension';
@@ -31,6 +31,7 @@ export class Teleport {
   public readonly initiator: boolean;
   public readonly localPeerId: PublicKey;
   public readonly remotePeerId: PublicKey;
+  public _sessionId?: PublicKey;
 
   private readonly _ctx = new Context({
     onError: (err) => {
@@ -124,6 +125,11 @@ export class Teleport {
     });
   }
 
+  @logInfo
+  get sessionIdString(): string {
+    return this._sessionId ? this._sessionId.truncate() : 'none';
+  }
+
   get stream(): Duplex {
     return this._muxer.stream;
   }
@@ -135,10 +141,22 @@ export class Teleport {
   /**
    * Blocks until the handshake is complete.
    */
-  async open() {
+
+  async open(
+    sessionId?: PublicKey,
+    // = PublicKey.fromHex('2c28f0d08ccc5340aee02655675be5796227a28d27b9704df34b7d8b2d9fddc7'),
+  ) {
+    if (!sessionId) {
+      log('undefined sessionId, generating random');
+      sessionId = PublicKey.fromHex('2c28f0d08ccc5340aee02655675be5796227a28d27b9704df34b7d8b2d9fddc7');
+    }
+    // invariant(sessionId);
+    log('open', { sessionId: sessionId.truncate() });
+    this._sessionId = sessionId;
     this._setExtension('dxos.mesh.teleport.control', this._control);
     await this._openExtension('dxos.mesh.teleport.control');
     this._open = true;
+    this._muxer.setSessionId(sessionId);
   }
 
   async close(err?: Error) {

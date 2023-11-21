@@ -95,7 +95,10 @@ export class SpaceManager {
     memberKey,
   }: ConstructSpaceParams) {
     log.trace('dxos.echo.space-manager.construct-space', trace.begin({ id: this._instanceId }));
-    log('constructing space...', { spaceKey: metadata.genesisFeedKey });
+    log.info('constructing space...', {
+      spaceKey: metadata.genesisFeedKey?.truncate(),
+      metadatakey: metadata.key.truncate(),
+    });
 
     // The genesis feed will be the same as the control feed if the space was created by the local agent.
     const genesisFeed = await this._feedStore.openFeed(metadata.genesisFeedKey ?? failUndefined());

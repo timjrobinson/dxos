@@ -23,6 +23,8 @@ export interface Transport {
   connected: Event;
   errors: ErrorStream;
 
+  getStats(): Promise<any>;
+  getDetails(): Promise<string>;
   destroy(): Promise<void>;
   signal(signal: Signal): void;
 }

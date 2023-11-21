@@ -61,13 +61,21 @@ export class ConnectionLog {
       info.connections!.push(connectionInfo);
       this.update.emit();
 
-      connection.stateChanged.on((state) => {
+      connection.stateChanged.on(async (state) => {
         connectionInfo.state = state;
         connectionInfo.closeReason = connection.closeReason;
         connectionInfo.events!.push({
           type: EventType.CONNECTION_STATE_CHANGED,
           newState: state,
         });
+
+        if (state === ConnectionState.CONNECTED) {
+          // debugger;
+          const details = await connection.transport?.getDetails();
+          // log.info('transport details', { details });
+          connectionInfo.transportDetails = details;
+        }
+
         this.update.emit();
       });
 

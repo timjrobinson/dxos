@@ -37,7 +37,7 @@
     "@dxos/teleport": "workspace:*",
     "@dxos/util": "workspace:*",
     "@koush/wrtc": "^0.5.3",
-    "debug": "^4.3.2",
+    "debug": "^4.3.4",
     "isomorphic-ws": "^4.0.1",
     "nanomessage-rpc": "^3.0.0",
     "node-datachannel": "^0.4.3",

@@ -145,6 +145,14 @@ export class SimplePeerTransportProxy implements Transport {
       .catch((err) => this.errors.raise(decodeError(err)));
   }
 
+  async getDetails(): Promise<string> {
+    return (await this._params.bridgeService.getDetails({ proxyId: this._proxyId })).details;
+  }
+
+  async getStats(): Promise<any> {
+    return (await this._params.bridgeService.getStats({ proxyId: this._proxyId })).stats;
+  }
+
   // TODO(burdon): Move open from constructor.
   async destroy(): Promise<void> {
     await this._ctx.dispose();

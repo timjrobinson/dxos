@@ -25,4 +25,12 @@ export class TcpTransport implements Transport {
   signal() {
     throw new Error('Method not implemented.');
   }
+
+  async getStats() {
+    throw new Error('Method not implemented.');
+  }
+
+  async getDetails(): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
 }

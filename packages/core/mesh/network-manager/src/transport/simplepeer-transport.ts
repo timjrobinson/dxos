@@ -7,7 +7,8 @@ import debug from 'debug';
 import SimplePeerConstructor, { type Instance as SimplePeer } from 'simple-peer';
 import invariant from 'tiny-invariant';
 
-import { Event } from '@dxos/async';
+import { Event, scheduleTaskInterval } from '@dxos/async';
+import { Context } from '@dxos/context';
 import { ErrorStream, raise } from '@dxos/debug';
 import { PublicKey } from '@dxos/keys';
 import { log } from '@dxos/log';
@@ -26,6 +27,7 @@ export type SimplePeerTransportParams = {
 
 debug.enable('simple-peer*');
 
+const WEBRTC_STATS_INTERVAL = 5000;
 /**
  * Implements Transport for WebRTC. Uses simple-peer under the hood.
  */
@@ -33,6 +35,7 @@ export class SimplePeerTransport implements Transport {
   private readonly _peer: SimplePeer;
   private _closed = false;
   private _piped = false;
+  private _statsCtx = new Context();
 
   readonly closed = new Event();
   readonly connected = new Event();
@@ -112,7 +115,7 @@ export class SimplePeerTransport implements Transport {
           (this._peer as any)._pc.getStats().then((stats: any) => {
             log.info('report after webrtc error', {
               config: this.params.webrtcConfig,
-              stats,
+              stats: Object.fromEntries((stats as any).entries()),
             });
           });
         }
@@ -123,8 +126,86 @@ export class SimplePeerTransport implements Transport {
       log('destroying after no error handling after peer on error?');
       await this.destroy();
     });
+
+    this.setupStats();
     log.trace('dxos.mesh.webrtc-transport.constructor', trace.end({ id: this._instanceId }));
   }
+
+  setupStats() {
+    if (typeof (this._peer as any)?._pc?.getStats !== 'function') {
+      log.info('WebRTC stats not available');
+      return;
+    }
+
+    scheduleTaskInterval(
+      this._statsCtx,
+      async () => {
+        const stats = await this.getStats();
+        if (!stats) {
+          return;
+        }
+        log.info('stats summary', {
+          dcbRecv: stats.datachannel.bytesReceived,
+          dcbSent: stats.datachannel.bytesSent,
+          dcmRecv: stats.datachannel.messagesReceived,
+          dcmSent: stats.datachannel.messagesSent,
+        });
+        log('stats', stats);
+      },
+      WEBRTC_STATS_INTERVAL,
+    );
+  }
+
+  async getStats(): Promise<any> {
+    if (typeof (this._peer as any)?._pc?.getStats !== 'function') {
+      return null;
+    }
+    return await (this._peer as any)._pc.getStats().then((stats: any) => {
+      const statsEntries = Array.from(stats.entries() as any[]);
+      const transport = statsEntries.filter((s: any) => s[1].type === 'transport')[0][1];
+      const candidatePair = statsEntries.filter((s: any) => s[0] === transport.selectedCandidatePairId);
+      let selectedCandidatePair: any;
+      let remoteCandidate: any;
+      if (candidatePair.length > 0) {
+        selectedCandidatePair = candidatePair[0][1];
+        remoteCandidate = statsEntries.filter((s: any) => s[0] === selectedCandidatePair.remoteCandidateId)[0][1];
+      }
+      return {
+        datachannel: statsEntries.filter((s: any) => s[1].type === 'data-channel')[0][1],
+        transport,
+        selectedCandidatePair,
+        remoteCandidate,
+
+        // Array.from(stats.entries()).filter((s: any) => s[1].type === 'data-channel'),
+        //       transport: Object.fromEntries(stats.entries()).filter((s: any) => s.type === 'transport'),
+        raw: Object.fromEntries(stats.entries()),
+        // json: JSON.stringify(stats, null, 2),
+      };
+    });
+  }
+
+  async getDetails(): Promise<string> {
+    const stats = await this.getStats();
+    const rc = stats?.remoteCandidate;
+    if (!rc) {
+      return 'unavailable';
+    }
+
+    log('remoote', { rc });
+    if (rc.relay) {
+      log('relay detected', { rc });
+      return `${rc.ip}:${rc.port}/${rc.protocol} relay for XXX ${rc.candidateType}`;
+    }
+    return `${rc.ip}:${rc.port}/${rc.protocol} ${rc.candidateType}`;
+  }
+
+  /*
+
+    const datachannelStats = Array.from(stats.values()).filter((s: any) => s.type === 'datachannel');
+    log.info('datachannel stats', datachannelStats);
+
+  }
+  */
 
   async destroy() {
     log('closing...');

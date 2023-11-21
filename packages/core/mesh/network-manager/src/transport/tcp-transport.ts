@@ -89,6 +89,19 @@ export class TcpTransport implements Transport {
     socket.connect({ port: payload.port, host: 'localhost' });
   }
 
+  async getDetails(): Promise<string> {
+    if (this.options.initiator) {
+      const { port, address } = this._server?.address() as AddressInfo;
+      return `LISTEN ${address}:${port}`;
+    }
+    const { port, address } = this._socket?.address() as AddressInfo;
+    return `ACCEPT ${address}:${port}`;
+  }
+
+  async getStats(): Promise<any> {
+    return {};
+  }
+
   private _handleSocket(socket: Socket) {
     log('handling socket', { remotePort: socket.remotePort, localPort: socket.localPort });
     this._socket = socket;

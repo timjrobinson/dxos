@@ -50,6 +50,10 @@ const columns: TableColumnDef<SwarmConnection, any>[] = [
     getGroupingValue: (value) => value.connection?.state,
     cell: (cell) => <span className={stateFormat[cell.getValue()]?.className}>{cell.getValue()}</span>,
   }),
+  helper.accessor((connection) => connection.connection?.transportDetails, {
+    id: 'details',
+    size: 80,
+  }),
   helper.accessor((connection) => connection.connection && getStats(connection.connection), {
     id: 'stats',
     cell: (cell) =>

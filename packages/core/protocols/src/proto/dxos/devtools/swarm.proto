@@ -41,6 +41,7 @@ message ConnectionInfo {
   optional string identity = 9;
   optional uint32 readBufferSize = 10;
   optional uint32 writeBufferSize = 11;
+  optional string transport_details = 12;
 }
 
 message ConnectionEvent {

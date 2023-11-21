@@ -166,4 +166,12 @@ export class MemoryTransport implements Transport {
       this._remote.wake(remoteId);
     }
   }
+
+  async getDetails(): Promise<string> {
+    return `MEMORY ${this._instanceId.toHex()}`;
+  }
+
+  async getStats(): Promise<any> {
+    return {};
+  }
 }

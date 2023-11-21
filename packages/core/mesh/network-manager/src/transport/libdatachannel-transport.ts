@@ -237,6 +237,14 @@ export class LibDataChannelTransport implements Transport {
       });
   }
 
+  async getDetails(): Promise<string> {
+    return 'TODO';
+  }
+
+  async getStats(): Promise<any> {
+    return {};
+  }
+
   // TODO(nf): add classmethod to call node-datachannel.cleanup() when all instances have been destroyed?
   async destroy(): Promise<void> {
     await this._close();

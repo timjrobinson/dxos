@@ -7,7 +7,7 @@ import { Context, cancelWithContext } from '@dxos/context';
 import { ErrorStream } from '@dxos/debug';
 import { invariant } from '@dxos/invariant';
 import { PublicKey } from '@dxos/keys';
-import { log } from '@dxos/log';
+import { log, logInfo } from '@dxos/log';
 import {
   CancelledError,
   ProtocolError,
@@ -135,6 +135,11 @@ export class Connection {
     });
   }
 
+  @logInfo
+  get sessionIdString(): string {
+    return this.sessionId.truncate();
+  }
+
   get state() {
     return this._state;
   }
@@ -161,11 +166,11 @@ export class Connection {
       initiator: this.initiator,
     });
 
-    log('changeState CONNECTING');
+    log('changeState CONNECTING', { sessionIdT: this.sessionId.truncate() });
     this._changeState(ConnectionState.CONNECTING);
 
     // TODO(dmaretskyi): Initialize only after the transport has established connection.
-    this._protocol.open().catch((err) => {
+    this._protocol.open(this.sessionId).catch((err) => {
       log('error opening protocol', { err });
       this.errors.raise(err);
     });
@@ -215,6 +220,7 @@ export class Connection {
       initiator: this.initiator,
       stream: this._protocol.stream,
       sendSignal: async (signal) => this._sendSignal(signal),
+      sessionId: this.sessionId,
     });
     log('created transport');
 

@@ -127,7 +127,7 @@ export class Gossip {
       );
       return;
     }
-    log(`gossip message ${channel} to ${this._connections.size}`, { payload });
+    // log(`gossip message ${channel} to ${this._connections.size}`, { payload });
     for (const extension of this._connections.values()) {
       this._sendAnnounceWithTimeoutTracking(extension, {
         peerId: this._params.localPeerId,
@@ -178,7 +178,7 @@ export class Gossip {
         if (this._params.localPeerId.equals(message.peerId) || remotePeerId.equals(message.peerId)) {
           return;
         }
-        log(`propogate gossip message ${message.channelId} from ${message.peerId}`, { message });
+        // log(`propogate gossip message ${message.channelId} from ${message.peerId}`, { message });
         return this._sendAnnounceWithTimeoutTracking(extension, message).catch((err) => log(err));
       }),
     );
@@ -219,6 +219,7 @@ export class Gossip {
     return extension.sendAnnounce(message).catch((err) => {
       if (err instanceof TimeoutError || err.constructor.name === 'TimeoutError' || err.message.startsWith('Timeout')) {
         if (message.channelId.startsWith(YJS_CHANNEL_PREFIX)) {
+          // log('add yjs timeout');
           this._addYjsTimeout();
         }
       }

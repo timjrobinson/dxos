@@ -225,7 +225,7 @@ export class Muxer {
     const port: RpcPort = {
       send: async (data: Uint8Array, timeout?: number) => {
         if (channel.tag === 'dxos.mesh.teleport.gossip/rpc') {
-          log('RpcPort sendData sendCommand');
+          // log('RpcPort sendData sendCommand');
         }
         await this._sendData(channel, data, timeout);
         // TODO(dmaretskyi): Debugging.
@@ -305,6 +305,7 @@ export class Muxer {
   // force close without confirmation
 
   async destroy(err?: Error) {
+    log('destroy', { err });
     if (this._destroying) {
       log('already destroying, ignoring destroy request');
       return;
@@ -414,7 +415,7 @@ export class Muxer {
       log.info('ignoring sendCommand after disposed', { cmd });
       return;
     }
-    log('sendCommand');
+    // log('sendCommand');
     try {
       const trigger = new Trigger<void>();
       this._balancer.pushData(Command.encode(cmd), trigger, channelId);

@@ -36,7 +36,7 @@ export class Framer {
   private readonly _stream = new Duplex({
     objectMode: false,
     read: (size) => {
-      log('framer read', { size });
+      // log('framer read', { size });
       this._processResponseQueue();
     },
     write: (chunk, encoding, callback) => {
@@ -124,7 +124,8 @@ export class Framer {
       log.info('backpressure RESUME done');
       this._backpressureActivated = false;
     }
-    log('done processResponseQueue');
+
+    // log('done processResponseQueue');
   }
 
   /**

@@ -599,6 +599,9 @@ importers:
       '@dxos/react-client':
         specifier: workspace:*
         version: link:../../sdk/react-client
+      '@dxos/react-shell':
+        specifier: workspace:*
+        version: link:../../sdk/react-shell
       '@dxos/react-ui':
         specifier: workspace:*
         version: link:../../ui/react-ui
@@ -621,9 +624,6 @@ importers:
       '@dxos/app-graph':
         specifier: workspace:*
         version: link:../../sdk/app-graph
-      '@dxos/react-shell':
-        specifier: workspace:*
-        version: link:../../sdk/react-shell
       '@dxos/react-ui-mosaic':
         specifier: workspace:*
         version: link:../../ui/react-ui-mosaic
@@ -7285,6 +7285,12 @@ importers:
       '@dxos/async':
         specifier: workspace:*
         version: link:../../common/async
+      '@dxos/client-protocol':
+        specifier: workspace:*
+        version: link:../client-protocol
+      '@dxos/client-services':
+        specifier: workspace:*
+        version: link:../client-services
       '@dxos/debug':
         specifier: workspace:*
         version: link:../../common/debug
@@ -7306,6 +7312,9 @@ importers:
       '@dxos/react-ui-types':
         specifier: workspace:*
         version: link:../../ui/react-ui-types
+      '@dxos/rpc-tunnel':
+        specifier: workspace:*
+        version: link:../../core/mesh/rpc-tunnel
       '@dxos/util':
         specifier: workspace:*
         version: link:../../common/util

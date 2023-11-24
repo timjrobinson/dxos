@@ -22,6 +22,7 @@ export enum SpaceAction {
   RENAME = `${SPACE_ACTION}/rename`,
   OPEN = `${SPACE_ACTION}/open`,
   CLOSE = `${SPACE_ACTION}/close`,
+  MIGRATE = `${SPACE_ACTION}/migrate`,
   BACKUP = `${SPACE_ACTION}/backup`,
   RESTORE = `${SPACE_ACTION}/restore`,
   ADD_OBJECT = `${SPACE_ACTION}/add-object`,

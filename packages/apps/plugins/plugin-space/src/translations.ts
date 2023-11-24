@@ -20,6 +20,7 @@ export default [
         'object name label': 'Object name',
         'close space label': 'Close space',
         'open space label': 'Open space',
+        'migrate space label': 'Migrate space',
         'download all docs in space label': 'Download backup',
         'upload all docs in space label': 'Upload backup',
         'share space': 'Share space',
